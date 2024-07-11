@@ -1,11 +1,12 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { IoClose } from 'react-icons/io5'; // You can use any close icon, here I use react-icons for demonstration
 
 
-const home = () => {
+const Home = () => {
     const fullText = ["Furqan Khattak", "Web Developer", "Front End Developer"];
     const items = ['html', 'css', 'javascript', 'node.js', 'tailwindcss', 'express.js', 'next.js', 'react'];
     
@@ -143,7 +144,7 @@ const home = () => {
                 transition={{ duration: 0.2 }}
                 onClick={handleOpen}
             >
-                <img
+                <Image
                     className=""
                     src="/profilepic-in-cv.jpg"
                     width={250}
@@ -155,15 +156,13 @@ const home = () => {
             {isOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="relative">
-                        <motion.img
+                        <Image
                             className=""
                             src="/profilepic-in-cv.jpg"
                             width={400}
                             height={400}
                             alt="Profile"
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ duration: 0.3 }}
+                          
                         />
                         <button
                             onClick={handleClose}
@@ -181,4 +180,4 @@ const home = () => {
     );
 }
 
-export default home;
+export default Home;

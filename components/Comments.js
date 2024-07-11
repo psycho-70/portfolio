@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import Image from 'next/image';
 const Comments = () => {
   const [comment, setComment] = useState('');
   const [username, setUsername] = useState('');
@@ -116,8 +116,10 @@ const Comments = () => {
                 className="border p-0 md:p-4 mb-2 rounded-lg break-words"
               >
                 <div className="flex items-center mb-2">
-                  <img
+                  <Image
                     src='/avatar-man.gif'
+                    width={40}
+                    height={40}
                     alt={comment.username}
                     className="w-10 h-10 rounded-full mr-3"
                   />

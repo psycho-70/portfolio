@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useState , useRef } from 'react';
 const skills = [
@@ -13,7 +13,7 @@ const skills = [
     { name: 'Tailwind CSS', icon: '/tailwind css.jfif', description: 'Utility-first CSS framework for rapid UI development.', details: 'Tailwind CSS is a utility-first CSS framework that provides low-level utility classes to build custom designs without any annoying opinionated styles you have to fight to override.' },
   ];
 
-const skill = () => {
+const Skill = () => {
     const [selectedSkill, setSelectedSkill] = useState(null);
     const skillsRef = useRef(null);
     const [startIndex, setStartIndex] = useState(0);
@@ -82,7 +82,9 @@ const skill = () => {
             className="w-[65%] md:w-[200px]  card  border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
           >
             <div className="w-full flex justify-center items-center h-44 px-2 py-4 md:py-0">
-              <img
+              <Image
+              width={100}
+              height={100}
                 className="rounded-lg w-full object-cover h-32 md:h-40 object-center"
                 src={skill.icon}
                 alt={skill.name}
@@ -200,4 +202,4 @@ const skill = () => {
   )
 }
 
-export default skill
+export default Skill

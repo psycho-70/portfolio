@@ -1,11 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 import { MdOutlineFacebook } from "react-icons/md";
 import { FaGithub } from "react-icons/fa6";
 import { FaWhatsapp } from "react-icons/fa6";
-
+import Image from "next/image";
 import Link from "next/link";
 
 const Navbar = () => {
@@ -26,7 +26,7 @@ const Navbar = () => {
             className="font-bold items-center uppercase text-lg cursor-pointer"
           >
             <span className="flex items-center w-1/6 md:text-xl text-sm gap-2">
-              <img src="/code1.gif" width={30} height={25} alt="the logo gif" />
+              <Image src="/code1.gif" width={30} height={25} alt="the logo gif" />
               informative <span className="text-red-500">world</span>
             </span>
           </motion.div>
