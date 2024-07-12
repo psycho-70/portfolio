@@ -1,24 +1,23 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import Image from 'next/image';
 import { IoClose } from 'react-icons/io5'; // You can use any close icon, here I use react-icons for demonstration
 
 const Home = () => {
     const fullText = ["Furqan Khattak", "Web Developer", "Front End Developer"];
     const items = ["html", "css", "javascript", "node.js", "tailwindcss", "express.js", "next.js", "react"];
-    
+
     const [displayedText, setDisplayedText] = useState('');
     const [textIndex, setTextIndex] = useState(0);
     const [isRemovingText, setIsRemovingText] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
-    
+
     const [displayedItem, setDisplayedItem] = useState('');
     const [currentItemIndex, setCurrentItemIndex] = useState(0);
     const [isRemovingItem, setIsRemovingItem] = useState(false);
 
-    const [curser, setCurser] = useState('|');
+    const [isOpen, setIsOpen] = useState(false);
+    const [cursorVisible, setCursorVisible] = useState(true);
 
     const handleDownloadCV = () => {
         const link = document.createElement('a');
@@ -47,7 +46,7 @@ const Home = () => {
                     if (prev.length < fullText[textIndex].length) {
                         return fullText[textIndex].slice(0, prev.length + 1);
                     } else {
-                        setTimeout(() => setIsRemovingText(true), 1000);
+                        setIsRemovingText(true);
                         clearInterval(textInterval);
                     }
                     return prev;
@@ -55,7 +54,7 @@ const Home = () => {
             }, 100);
         }
         return () => clearInterval(textInterval);
-    },);
+    }, [textIndex, isRemovingText, fullText]);
 
     useEffect(() => {
         let itemInterval;
@@ -66,7 +65,7 @@ const Home = () => {
                         return prev.slice(0, -1);
                     } else {
                         setIsRemovingItem(false);
-                        setCurrentItemIndex((prevIndex) => (prevIndex +1) % items.length);
+                        setCurrentItemIndex((prevIndex) => (prevIndex + 1) % items.length);
                         return '';
                     }
                 });
@@ -74,11 +73,11 @@ const Home = () => {
         } else {
             itemInterval = setInterval(() => {
                 setDisplayedItem((prev) => {
-                    
-                  if (prev.length < items[currentItemIndex].length) {
-                    return items[currentItemIndex].slice(0, prev.length + 1);
+                    const currentItem = items[currentItemIndex];
+                    if (currentItem && prev.length < currentItem.length) {
+                        return currentItem.slice(0, prev.length + 1);
                     } else {
-                        setTimeout(() => setIsRemovingItem(true), 1000);
+                        setIsRemovingItem(true);
                         clearInterval(itemInterval);
                     }
                     return prev;
@@ -86,7 +85,14 @@ const Home = () => {
             }, 100);
         }
         return () => clearInterval(itemInterval);
-    }, [currentItemIndex, isRemovingItem]);
+    }, [currentItemIndex, isRemovingItem, items]);
+
+    useEffect(() => {
+        const cursorInterval = setInterval(() => {
+            setCursorVisible((prev) => !prev);
+        }, 500);
+        return () => clearInterval(cursorInterval);
+    }, []);
 
     const handleOpen = () => {
         setIsOpen(true);
@@ -112,7 +118,7 @@ const Home = () => {
                     Expertise {' '}
                         <span className='text-red-500 font-bold'>
                             {displayedItem}
-                            {curser}
+                            {cursorVisible ? '|' : ' '}
                         </span>
                     </h2>
                     <p className='text-start whitespace-break-spaces leading-relaxed'>
@@ -133,47 +139,49 @@ const Home = () => {
                             >
                                 Explore Projects
                             </button></a>
-                       
                     </div>
                 </div>
 
                 <div>
-            <motion.div
-                className="relative overflow-hidden mt-5 md:mt-0"
-                whileHover={{ translateX: 10 }}
-                transition={{ duration: 0.2 }}
-                onClick={handleOpen}
-            >
-                <Image
-                    className=""
-                    src="/profilepic-in-cv.jpg"
-                    width={250}
-                    height={250}
-                    alt="Profile"
-                />
-            </motion.div>
-
-            {isOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="relative">
+                    <motion.div
+                        
+                        onClick={handleOpen}
+                    >
                         <Image
-                            className=""
+                            className="profile-pic"
                             src="/profilepic-in-cv.jpg"
-                            width={400}
-                            height={400}
+                            width={250}
+                            height={250}
                             alt="Profile"
-                          
                         />
-                        <button
-                            onClick={handleClose}
-                            className="absolute top-0 right-0 m-2 p-2  rounded-full"
-                        >
-                            <IoClose size={24} />
-                        </button>
-                    </div>
+                    </motion.div>
+                    <style jsx>{`
+    .profile-pic {
+        width: auto;
+        height: auto;
+    }
+`}</style>
+
+                    {isOpen && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                            <div className="relative">
+                                <Image
+                                    className="profile-pic"
+                                    src="/profilepic-in-cv.jpg"
+                                    width={400}
+                                    height={400}
+                                    alt="Profile"
+                                />
+                                <button
+                                    onClick={handleClose}
+                                    className="absolute top-0 right-0 m-2 p-2  rounded-full"
+                                >
+                                    <IoClose size={24} />
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            )}
-        </div>
             </section>
             <div className="h-[1px] w-full bg-white"></div>
         </>
