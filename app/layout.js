@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Script from 'next/script';
 
 
 // Metadata for static site generation or other use
@@ -26,7 +27,7 @@ export default function RootLayout({ children }) {
             <Footer />
           
         </div>
-        <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
+        <Script src="https://cdn.lordicon.com/xdjxvujz.js" strategy="lazyOnload" />
       </body>
     </html>
   );
