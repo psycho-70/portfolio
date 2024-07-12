@@ -180,7 +180,9 @@ const Skill = () => {
             <div className="text-center">
               <h2 className="md:text-2xl text-sm font-bold mb-4 dark:text-white">{selectedSkill.name}</h2>
               <div className="flex justify-center">
-                <img
+                <Image
+                width={100}
+                height={100}
                   className="md:w-1/2 md:h-48 h-24 object-cover mb-4 rounded-lg"
                   src={selectedSkill.icon}
                   alt={selectedSkill.name}

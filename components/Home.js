@@ -8,7 +8,7 @@ import { IoClose } from 'react-icons/io5'; // You can use any close icon, here I
 
 const Home = () => {
     const fullText = ["Furqan Khattak", "Web Developer", "Front End Developer"];
-    const items = ['html', 'css', 'javascript', 'node.js', 'tailwindcss', 'express.js', 'next.js', 'react'];
+    const items = ["html",, "css", "javascript", "node.js", "tailwindcss", "express.js", "next.js", "react"];
     
     const [displayedText, setDisplayedText] = useState('');
     const [textIndex, setTextIndex] = useState(0);
@@ -67,7 +67,7 @@ const Home = () => {
                         return prev.slice(0, -1);
                     } else {
                         setIsRemovingItem(false);
-                        setCurrentItemIndex((prevIndex) => (prevIndex + 1) % items.length);
+                        setCurrentItemIndex((prevIndex) => (prevIndex +1) % items.length);
                         return '';
                     }
                 });
@@ -83,7 +83,7 @@ const Home = () => {
                     }
                     return prev;
                 });
-            }, 150);
+            }, 100);
         }
         return () => clearInterval(itemInterval);
     }, [currentItemIndex, isRemovingItem]);
