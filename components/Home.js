@@ -5,10 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { IoClose } from 'react-icons/io5'; // You can use any close icon, here I use react-icons for demonstration
 
-
 const Home = () => {
     const fullText = ["Furqan Khattak", "Web Developer", "Front End Developer"];
-    const items = ["html",, "css", "javascript", "node.js", "tailwindcss", "express.js", "next.js", "react"];
+    const items = ["html", "css", "javascript", "node.js", "tailwindcss", "express.js", "next.js", "react"];
     
     const [displayedText, setDisplayedText] = useState('');
     const [textIndex, setTextIndex] = useState(0);
@@ -56,7 +55,7 @@ const Home = () => {
             }, 100);
         }
         return () => clearInterval(textInterval);
-    }, [textIndex, isRemovingText]);
+    },);
 
     useEffect(() => {
         let itemInterval;
@@ -75,8 +74,9 @@ const Home = () => {
         } else {
             itemInterval = setInterval(() => {
                 setDisplayedItem((prev) => {
-                    if (prev.length < items[currentItemIndex].length) {
-                        return items[currentItemIndex].slice(0, prev.length + 1);
+                    
+                  if (prev.length < items[currentItemIndex].length) {
+                    return items[currentItemIndex].slice(0, prev.length + 1);
                     } else {
                         setTimeout(() => setIsRemovingItem(true), 1000);
                         clearInterval(itemInterval);
