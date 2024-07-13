@@ -151,18 +151,18 @@ const Navbar = () => {
                   <ul className="list-none space-y-2">
                     <li>
                       <a href="https://web.facebook.com/furqan.don.771/" target="_blank" rel="noopener noreferrer" className="hover:underline">
-                      <MdOutlineFacebook />
+                      <MdOutlineFacebook style={{ height: '30px', width: '30px' }}  />
                       </a>
                     </li>
                     <li>
                       <a href="https://wa.me/03141868872" target="_blank" rel="noopener noreferrer" className=" hover:underline">
-                      <FaWhatsapp />
+                      <FaWhatsapp style={{ height: '30px', width: '30px' }}  />
 
                       </a>
                     </li>
                     <li>
                       <a href="https://github.com/psycho-70" target="_blank" rel="noopener noreferrer" className=" hover:underline">
-                      <FaGithub />
+                      <FaGithub style={{ height: '30px', width: '30px' }} />
 
                       </a>
                     </li>
