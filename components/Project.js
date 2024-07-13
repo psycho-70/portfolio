@@ -8,7 +8,10 @@ const Project = () => {
      <div className="line h-[1px] bg-white w-full"></div>
         <div className=" flex flex-col md:flex-row gap-10  min-h-full bg-slate-800 items-center justify-center">
           <div className="md:w-1/3 mb-6  my-10 flex items-center justify-center ">
-            <Image src="/pass.png" width={200} height={100} alt="Password Manager" className=" w-[150px] md:w-[200px] md:h-[400px] rounded-lg shadow-lg" />
+            <Image src="/pass.PNG" width={200} 
+            height={100}
+             alt="Password Manager"
+             className=" w-[150px] md:w-[200px] md:h-[400px] rounded-lg shadow-lg" />
           </div>
           <div className="md:w-1/2">
             <h2 className="text-3xl md:text-start text-center text-red-500 font-bold mb-4">Password Manager</h2>
