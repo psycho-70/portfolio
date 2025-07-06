@@ -1,98 +1,101 @@
-'use client'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { IoClose } from 'react-icons/io5'; // You can use any close icon, here I use react-icons for demonstration
+import { IoClose } from 'react-icons/io5';
+import { MdOutlineFacebook } from "react-icons/md";
+import { FaGithub, FaWhatsapp, FaLinkedin, FaYoutube, FaDownload, FaX, FaEye, FaRocket } from "react-icons/fa6";
+import { Tooltip } from "@mui/material";
+import Link from 'next/link';
+import { useAppContext } from "@/app/Context/AppContext";
+import Address from './Address';
+import TypingEffect from './TypingEffect';
+import { Pacifico, Play } from 'next/font/google';
+import Iconlist from './IconList';
+
+const pacifico = Pacifico({
+    weight: '400',
+    subsets: ['latin'],
+});
+
+const play = Play({
+    weight: ['400', '700'],
+    subsets: ['latin'],
+});
 
 const Home = () => {
-    const fullText = ["Furqan Khattak", "Web Developer", "Front End Developer"];
-    const items = ["html", "css", "javascript", "node.js", "tailwindcss", "express.js", "next.js", "react"];
-
-    const [displayedText, setDisplayedText] = useState('');
-    const [textIndex, setTextIndex] = useState(0);
-    const [isRemovingText, setIsRemovingText] = useState(false);
-
-    const [displayedItem, setDisplayedItem] = useState('');
-    const [currentItemIndex, setCurrentItemIndex] = useState(0);
-    const [isRemovingItem, setIsRemovingItem] = useState(false);
-
+    const { darkMode, toggleDarkMode } = useAppContext();
     const [isOpen, setIsOpen] = useState(false);
-    const [cursorVisible, setCursorVisible] = useState(true);
+    const [isCVModalOpen, setIsCVModalOpen] = useState(false);
+    const [pdfError, setPdfError] = useState(false);
+    const [pdfLoading, setPdfLoading] = useState(false);
 
-    const handleDownloadCV = () => {
-        const link = document.createElement('a');
-        link.href = '/Furqanullahcv.pdf';  // Ensure the PDF is in the public folder
-        link.download = 'Furqanullahcv.pdf';
-        link.click();
+    const nameTexts = ["Furqan Khattak", "Web Developer", "Front End Developer"];
+    const skillTexts = ["html", "css", "javascript", "node.js", "tailwindcss", "express.js", "next.js", "react"];
+
+    // PDF path in public folder
+    const pdfUrl = '/Furqan_Ullah.pdf';
+
+    // Clean theme classes based on ProjectShowcase
+    const themeClasses = {
+        background: darkMode 
+            ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900' 
+            : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50',
+        text: darkMode ? 'text-white' : 'text-gray-900',
+        cardBg: darkMode ? 'bg-white/10' : 'bg-white/80',
+        cardBorder: darkMode ? 'border-white/20' : 'border-gray-200',
+        modalBg: darkMode ? 'bg-black/90' : 'bg-white/95',
+        buttonPrimary: darkMode 
+            ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600' 
+            : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600',
+        buttonSecondary: darkMode 
+            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600' 
+            : 'bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600',
+        gradientText: darkMode 
+            ? 'bg-gradient-to-r from-purple-400 to-pink-400' 
+            : 'bg-gradient-to-r from-blue-600 to-purple-600',
+        skillGradient: darkMode 
+            ? 'bg-gradient-to-r from-green-400 to-blue-400' 
+            : 'bg-gradient-to-r from-blue-600 to-purple-600',
     };
 
-    useEffect(() => {
-        let textInterval;
-        if (isRemovingText) {
-            textInterval = setInterval(() => {
-                setDisplayedText((prev) => {
-                    if (prev.length > 0) {
-                        return prev.slice(0, -1);
-                    } else {
-                        setIsRemovingText(false);
-                        setTextIndex((prevIndex) => (prevIndex + 1) % fullText.length);
-                        return '';
-                    }
-                });
-            }, 100);
-        } else {
-            textInterval = setInterval(() => {
-                setDisplayedText((prev) => {
-                    if (prev.length < fullText[textIndex].length) {
-                        return fullText[textIndex].slice(0, prev.length + 1);
-                    } else {
-                        setIsRemovingText(true);
-                        clearInterval(textInterval);
-                    }
-                    return prev;
-                });
-            }, 100);
+    const handleDownloadCV = () => {
+        try {
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = 'Furqan_Ullah_CV.pdf';
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Download failed:', error);
+            window.open(pdfUrl, '_blank');
         }
-        return () => clearInterval(textInterval);
-    }, [textIndex, isRemovingText, fullText]);
+    };
 
-    useEffect(() => {
-        let itemInterval;
-        if (isRemovingItem) {
-            itemInterval = setInterval(() => {
-                setDisplayedItem((prev) => {
-                    if (prev.length > 0) {
-                        return prev.slice(0, -1);
-                    } else {
-                        setIsRemovingItem(false);
-                        setCurrentItemIndex((prevIndex) => (prevIndex + 1) % items.length);
-                        return '';
-                    }
-                });
-            }, 100);
-        } else {
-            itemInterval = setInterval(() => {
-                setDisplayedItem((prev) => {
-                    const currentItem = items[currentItemIndex];
-                    if (currentItem && prev.length < currentItem.length) {
-                        return currentItem.slice(0, prev.length + 1);
-                    } else {
-                        setIsRemovingItem(true);
-                        clearInterval(itemInterval);
-                    }
-                    return prev;
-                });
-            }, 100);
+    const handleOpenCVModal = async () => {
+        setPdfLoading(true);
+        setPdfError(false);
+        
+        try {
+            const response = await fetch(pdfUrl);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            setIsCVModalOpen(true);
+        } catch (error) {
+            console.error('Error loading PDF:', error);
+            setPdfError(true);
+        } finally {
+            setPdfLoading(false);
         }
-        return () => clearInterval(itemInterval);
-    }, [currentItemIndex, isRemovingItem, items]);
+    };
 
-    useEffect(() => {
-        const cursorInterval = setInterval(() => {
-            setCursorVisible((prev) => !prev);
-        }, 500);
-        return () => clearInterval(cursorInterval);
-    }, []);
+    const handleCloseCVModal = () => {
+        setIsCVModalOpen(false);
+        setPdfError(false);
+    };
 
     const handleOpen = () => {
         setIsOpen(true);
@@ -103,88 +106,261 @@ const Home = () => {
     };
 
     return (
-        <>
-            <div className="h-[1px] w-full mt-16 bg-white"></div>
-            <section className='md:flex w-full justify-evenly items-center p-5 mx-auto min-h-96 bg-slate-800'>
-                <div className='text-center md:w-[50%] p-1 flex flex-col gap-5'>
-                    <h1 className='md:text-3xl text-2xl text-start font-bold'>
-                        I am {displayedText && displayedText.split(' ').map((word, idx) => (
-                            <span key={idx}>
-                                <span className='text-red-500 font-bold'> {word} </span>
-                            </span>
-                        ))}
-                    </h1>
-                    <h2 className='text-start font-bold text-xl'>
-                    Expertise {' '}
-                        <span className='text-red-500 font-bold'>
-                            {displayedItem}
-                            {cursorVisible ? '|' : ' '}
+        <section className={`w-full relative overflow-hidden mx-auto ${darkMode 
+            ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900' 
+            : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'} ${themeClasses.text} transition-all duration-500`}>
+            <div className={`flex max-w-[1500px] mx-auto flex-wrap container ${themeClasses.text} justify-center items-start relative z-10`}>
+                <motion.div 
+                    className={`text-center md:w-[50%] mt-16 md:mt-32 flex flex-col gap-8 px-6`}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                >
+                    <motion.h1 
+                        className={`md:text-5xl text-3xl text-start font-bold leading-tight`}
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                    >
+                        I am{' '}
+                        <span className={`${themeClasses.gradientText} bg-clip-text text-transparent font-extrabold`}>
+                            <TypingEffect
+                                texts={nameTexts}
+                                typingSpeed={100}
+                                deletingSpeed={50}
+                                delayBetweenTexts={1000}
+                            />
                         </span>
-                    </h2>
-                    <p className='text-start whitespace-break-spaces leading-relaxed'>
-                    Hello! I'm Furqan, a passionate and dedicated website developer with a Bachelor's degree in Software Engineering. With a strong foundation in software engineering principles and hands-on experience in web development, I specialize in creating dynamic and responsive websites that deliver exceptional user experiences.
-                    </p>
-                    <div className='flex gap-4'>
+                    </motion.h1>
+
+                    <motion.h2 
+                        className='text-start text-xl md:text-2xl font-semibold'
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.4 }}
+                    >
+                        Expertise{' '}
+                        <span className={`${themeClasses.skillGradient} bg-clip-text text-transparent text-2xl md:text-3xl font-bold`}>
+                            <TypingEffect
+                                texts={skillTexts}
+                                typingSpeed={150}
+                                deletingSpeed={75}
+                                delayBetweenTexts={800}
+                            />
+                        </span>
+                    </motion.h2>
+
+                    <motion.p 
+                        className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-start text-lg leading-relaxed w-full md:w-[520px] font-medium`}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.6 }}
+                    >
+                        I am a passionate Front-End Developer with over 2 years of hands-on experience in web
+                        development using modern technologies like React.js, Next.js, Node.js, and Tailwind CSS. I am
+                        currently working remotely with Precise Tech (Canada) as a Web Developer, contributing to
+                        large-scale web applications, including ERP systems and e-commerce platforms.
+                    </motion.p>
+
+                    <motion.div 
+                        className='flex gap-6 mt-8'
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.8 }}
+                    >
                         <button
                             type="button"
-                            className='text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'
-                            onClick={handleDownloadCV}
+                            className={`group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 ${themeClasses.buttonPrimary} rounded-2xl focus:outline-none focus:ring-4 focus:ring-purple-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg`}
+                            onClick={handleOpenCVModal}
+                            disabled={pdfLoading}
                         >
-                            Download CV
+                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-2xl"></span>
+                            <FaEye className="mr-3 text-xl group-hover:rotate-12 transition-transform duration-300" />
+                            {pdfLoading ? 'Loading...' : 'Preview CV'}
                         </button>
-                        <a href="https://github.com/psycho-70?tab=repositories" target='_blank'>
-                            <button
-                                type="button"
-                                className='text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'
-                            >
-                                Explore Projects
-                            </button></a>
-                    </div>
-                </div>
 
-                <div>
-                    <motion.div
-                        
-                        onClick={handleOpen}
-                    >
+                        <Link href="#project">
+                            <button className={`group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 ${themeClasses.buttonSecondary} rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg`}>
+                                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-2xl"></span>
+                                <FaRocket className="mr-3 text-xl group-hover:rotate-12 transition-transform duration-300" />
+                                Explore Projects
+                            </button>
+                        </Link>
+                    </motion.div>
+                </motion.div>
+
+                <motion.div 
+                    className='mt-16 md:mt-24'
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                    <div className="relative">
+                        <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-r from-purple-500 to-pink-500 blur-2xl opacity-20' : 'bg-gradient-to-r from-blue-400 to-purple-400 blur-xl opacity-15'} rounded-full animate-pulse`}></div>
                         <Image
-                            className="profile-pic"
-                            src="/profilepic-in-cv.jpg"
-                            width={250}
-                            height={250}
+                            className={`profile-pic relative z-10 rounded-full ${darkMode ? 'shadow-2xl border-4 border-white/10' : 'shadow-xl border-4 border-white/30'} hover:scale-105 transition-transform duration-300`}
+                            src="/fk.png"
+                            width={400}
+                            height={400}
                             alt="Profile"
                         />
-                    </motion.div>
-                    <style jsx>{`
-    .profile-pic {
-        width: auto;
-        height: auto;
-    }
-`}</style>
+                    </div>
+                </motion.div>
 
-                    {isOpen && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                            <div className="relative">
-                                <Image
-                                    className="profile-pic"
-                                    src="/profilepic-in-cv.jpg"
-                                    width={400}
-                                    height={400}
-                                    alt="Profile"
-                                />
-                                <button
-                                    onClick={handleClose}
-                                    className="absolute top-0 right-0 m-2 p-2  rounded-full"
+                <Iconlist />
+
+                <motion.div 
+                    className="absolute top-[20%] right-[20px] z-20"
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, delay: 1 }}
+                >
+                    <ul className="list-none space-y-6">
+                        <li>
+                            <Tooltip title="Facebook" arrow>
+                                <a
+                                    href="https://web.facebook.com/furqan.don.771/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`block p-3 rounded-full bg-blue-500 hover:bg-blue-600 transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm`}
                                 >
-                                    <IoClose size={24} />
-                                </button>
-                            </div>
+                                    <MdOutlineFacebook className="text-white text-2xl" />
+                                </a>
+                            </Tooltip>
+                        </li>
+                        <li>
+                            <Tooltip title="WhatsApp" arrow>
+                                <a
+                                    href="https://wa.me/03141868872"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`block p-3 rounded-full bg-green-500 hover:bg-green-600 transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm`}
+                                >
+                                    <FaWhatsapp className="text-white text-2xl" />
+                                </a>
+                            </Tooltip>
+                        </li>
+                        <li>
+                            <Tooltip title="GitHub" arrow>
+                                <a
+                                    href="https://github.com/psycho-70"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`block p-3 rounded-full bg-gray-800 hover:bg-gray-700 transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm`}
+                                >
+                                    <FaGithub className="text-white text-2xl" />
+                                </a>
+                            </Tooltip>
+                        </li>
+                        <li>
+                            <Tooltip title="LinkedIn" arrow>
+                                <a
+                                    href="https://www.linkedin.com/in/furqan-ktk-856552191"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`block p-3 rounded-full bg-blue-600 hover:bg-blue-700 transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm`}
+                                >
+                                    <FaLinkedin className="text-white text-2xl" />
+                                </a>
+                            </Tooltip>
+                        </li>
+                        <li>
+                            <Tooltip title="YouTube" arrow>
+                                <a
+                                    href="https://www.youtube.com/@furqankhattak71"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`block p-3 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm`}
+                                >
+                                    <FaYoutube className="text-white text-2xl" />
+                                </a>
+                            </Tooltip>
+                        </li>
+                    </ul>
+                </motion.div>
+            </div>
+
+            {/* Enhanced CV Preview Modal */}
+            {isCVModalOpen && (
+                <motion.div 
+                    className={`fixed inset-0 z-50 flex items-center justify-center ${themeClasses.modalBg} backdrop-blur-sm p-4`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                >
+                    <motion.div 
+                        className={`relative ${themeClasses.cardBg} border ${themeClasses.cardBorder} backdrop-blur-sm rounded-3xl p-8 w-full max-w-6xl h-[90vh] flex flex-col shadow-2xl`}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <button
+                            onClick={handleCloseCVModal}
+                            className={`absolute top-6 right-6 p-3 rounded-full transition-all duration-300 hover:scale-110 ${themeClasses.cardBg} border ${themeClasses.cardBorder} backdrop-blur-sm shadow-lg`}
+                        >
+                            <FaX className="text-xl" />
+                        </button>
+                        
+                        <h2 className={`text-3xl font-bold mb-6 ${themeClasses.gradientText} bg-clip-text text-transparent`}>
+                            My CV Preview
+                        </h2>
+                        
+                        <div className="flex-1 mb-6 min-h-0">
+                            {pdfError ? (
+                                <div className="flex flex-col items-center justify-center h-full">
+                                    <p className="text-red-500 dark:text-red-400 mb-6 text-center text-lg">
+                                        CV preview could not be loaded. Please try downloading instead.
+                                    </p>
+                                    <div className="flex gap-4">
+                                        <button
+                                            onClick={handleDownloadCV}
+                                            className={`flex items-center gap-3 ${themeClasses.buttonSecondary} text-white px-6 py-3 rounded-2xl transition-all duration-300 shadow-lg hover:scale-105`}
+                                        >
+                                            <FaDownload className="text-lg" /> Download CV
+                                        </button>
+                                        <button
+                                            onClick={() => window.open(pdfUrl, '_blank')}
+                                            className={`flex items-center gap-3 ${themeClasses.buttonPrimary} text-white px-6 py-3 rounded-2xl transition-all duration-300 shadow-lg hover:scale-105`}
+                                        >
+                                            Open in New Tab
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className={`w-full h-full rounded-2xl overflow-hidden shadow-2xl`}>
+                                    <iframe 
+                                        src={`${pdfUrl}#view=FitH`}
+                                        className="w-full h-full border-0 rounded-2xl"
+                                        title="CV Preview"
+                                        onError={() => setPdfError(true)}
+                                    >
+                                        <p>Your browser does not support PDFs. 
+                                            <a href={pdfUrl} className="text-blue-500 underline">Download the PDF</a>.
+                                        </p>
+                                    </iframe>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
-            </section>
-            <div className="h-[1px] w-full bg-white"></div>
-        </>
+                        
+                        <div className="flex justify-center gap-6">
+                            <button
+                                onClick={handleDownloadCV}
+                                className={`flex items-center gap-3 ${themeClasses.buttonSecondary} text-white px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg hover:scale-105 font-semibold`}
+                            >
+                                <FaDownload className="text-lg" /> Download CV
+                            </button>
+                            <button
+                                onClick={() => window.open(pdfUrl, '_blank')}
+                                className={`flex items-center gap-3 ${themeClasses.buttonPrimary} text-white px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg hover:scale-105 font-semibold`}
+                            >
+                                Open in New Tab
+                            </button>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </section>
     );
 }
 

@@ -1,179 +1,351 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { IoMdClose } from "react-icons/io";
-import { MdOutlineFacebook } from "react-icons/md";
-import { FaGithub } from "react-icons/fa6";
-import { FaWhatsapp } from "react-icons/fa6";
+import { IoMdMenu, IoMdClose } from "react-icons/io";
 import Image from "next/image";
 import Link from "next/link";
+import { Drawer, IconButton, Switch } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import MenuIcon from "@mui/material/Menu";
+import { useAppContext } from "@/app/Context/AppContext";
+
+// Enhanced Material UI Switch for Dark Mode
+const MaterialUISwitch = styled(Switch)(({ theme }) => ({
+  width: 70,
+  height: 38,
+  padding: 7,
+  '& .MuiSwitch-switchBase': {
+    margin: 1,
+    padding: 0,
+    transform: 'translateX(6px)',
+    '&.Mui-checked': {
+      color: '#fff',
+      transform: 'translateX(24px)',
+      '& .MuiSwitch-thumb:before': {
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+          '#fff',
+        )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
+      },
+      '& + .MuiSwitch-track': {
+        opacity: 1,
+        background: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
+      },
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    background: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
+    width: 34,
+    height: 34,
+    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+    '&::before': {
+      content: "''",
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      left: 0,
+      top: 0,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+        '#fff',
+      )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
+    },
+  },
+  '& .MuiSwitch-track': {
+    opacity: 1,
+    background: 'linear-gradient(45deg, #ffeaa7 0%, #fab1a0 100%)',
+    borderRadius: 20 / 2,
+  },
+}));
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showContact, setShowContact] = useState(false);
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [activeItem, setActiveItem] = useState("Home");
 
-  const handleHireMeClick = () => {
-    setShowContact((prev) => !prev);
+  const { darkMode, toggleDarkMode } = useAppContext();
+
+  const toggleDrawer = (open) => (event) => {
+    setIsMenuOpen(open);
   };
+
+  const handleScroll = () => {
+    if (typeof window !== "undefined") {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsNavbarVisible(false);
+      } else {
+        setIsNavbarVisible(true);
+      }
+      setLastScrollY(currentScrollY);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", handleScroll);
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, [lastScrollY]);
+
+  const navItems = [
+    { name: "Home", color: "from-pink-500 to-rose-500" },
+    { name: "About", color: "from-purple-500 to-indigo-500" },
+    { name: "Skill", color: "from-blue-500 to-cyan-500" },
+    { name: "Project", color: "from-green-500 to-teal-500" },
+    { name: "Services", color: "from-yellow-500 to-orange-500" },
+    { name: "Team", color: "from-red-500 to-pink-500" },
+    { name: "Experince", color: "from-red-500 to-pink-500" },
+  ];
 
   return (
     <>
-      <nav className="flex justify-between w-full h-16 z-10 items-center p-3 bg-slate-800 text-white">
-        <Link href="#home">
-          <motion.div
-            whileHover={{ scale: 1.1, translateX: "20px" }}
-            whileTap={{ scale: 0.9 }}
-            className="font-bold items-center uppercase text-lg cursor-pointer"
-          >
-            <span className="flex items-center w-1/6 md:text-xl text-sm gap-2">
-              <Image src="/code1.gif" width={30} height={25} alt="the logo gif" />
-              informative <span className="text-red-500">world</span>
-            </span>
-          </motion.div>
-        </Link>
+      <nav
+        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+          isNavbarVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
+        {/* Main Navbar */}
+        <div className={`relative ${
+          darkMode 
+            ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' 
+            : 'bg-gradient-to-r from-white via-gray-50 to-white'
+        } backdrop-blur-md shadow-2xl border-b ${
+          darkMode ? 'border-gray-700/50' : 'border-gray-200/50'
+        }`}>
+          
+          {/* Animated Background Elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-0 left-0 w-full h-full">
+              <div className="absolute top-0 left-1/4 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-xl animate-pulse"></div>
+              <div className="absolute top-0 right-1/4 w-24 h-24 bg-gradient-to-br from-pink-500/10 to-orange-500/10 rounded-full blur-xl animate-pulse delay-1000"></div>
+            </div>
+          </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="block md:hidden text-white focus:outline-none"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          <svg
-            className="h-6 w-6 fill-current"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            {isMenuOpen ? (
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            ) : (
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M4 6h16a1 1 0 010 2H4a1 1 0 010-2zm0 5h16a1 1 0 010 2H4a1 1 0 010-2zm0 5h16a1 1 0 010 2H4a1 1 0 010-2z"
-              />
-            )}
-          </svg>
-        </button>
-
-        {/* Desktop Menu */}
-        <div
-          className={`${isMenuOpen
-              ? "block bg-slate-800 fixed top-0 text-center"
-              : "hidden"
-            } md:flex flex-col md:flex-row md:items-center md:bg-transparent absolute md:static top-10 right-0 md:w-auto`}
-        >
-          {/* Close Button */}
-          {isMenuOpen && (
-            <button
-              className="md:hidden text-white focus:outline-none self-end p-4"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <IoMdClose />
-            </button>
-          )}
-          <ul className="flex flex-col md:flex-row justify-center items-center gap-5 text-[17px] m-2">
-            <motion.li
-              whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
-              whileTap={{ scale: 0.9 }}
-              className="cursor-pointer"
-            >
-              <Link href="#home">
-                <span className="block">Home</span>
-              </Link>
-            </motion.li>
-            <motion.li
-              whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
-              whileTap={{ scale: 0.9 }}
-              className="cursor-pointer"
-            >
-              <Link href="#about">
-                <span className="block">About</span>
-              </Link>
-            </motion.li>
-            <motion.li
-              whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
-              whileTap={{ scale: 0.9 }}
-              className="cursor-pointer"
-            >
-              <Link href="#skill">
-                <span className="block">Skill</span>
-              </Link>
-            </motion.li>
-            <motion.li
-              whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
-              whileTap={{ scale: 0.9 }}
-              className="cursor-pointer"
-            >
-              <Link href="#project">
-                <span className="block">Project</span>
-              </Link>
-            </motion.li>
-            <motion.li
-              whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
-              whileTap={{ scale: 0.9 }}
-              className="cursor-pointer"
-            >
-              <Link href="#services">
-                <span className="block">Services</span>
-              </Link>
-            </motion.li>
-            <motion.li
-              whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
-              whileTap={{ scale: 0.9 }}
-              className="cursor-pointer"
-            >
-              <Link href="#team">
-                <span className="block">Team</span>
-              </Link>
-            </motion.li>
-            <motion.li
-              whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
-              whileTap={{ scale: 0.9 }}
-              className="cursor-pointer"
-            >
-              <Link href="#comments">
-                <span className="block">Comments</span>
-              </Link>
-            </motion.li>
-            <motion.li >
-              <button
-                onClick={handleHireMeClick}
-   className='text-white bg-gradient-to-r m-2 font-bold from-red-500 via-red-600 to-red-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2'         
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-between">
+              
+              {/* Logo Section */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="relative z-10"
               >
-                Hire Me
-              </button>
-              {showContact && (
-                <div className="absolute top-90 md:top-16 right-2 flex flex-col items-center justify-center bg-slate-600 border shadow-lg p-2 rounded-lg z-50">
-                  <h2 className="text-lg font-bold mb-2 ">Contact Me</h2>
-                  <ul className="list-none space-y-2">
-                    <li>
-                      <a href="https://web.facebook.com/furqan.don.771/" target="_blank" rel="noopener noreferrer" className="hover:underline">
-                      <MdOutlineFacebook style={{ height: '30px', width: '30px' }}  />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://wa.me/03141868872" target="_blank" rel="noopener noreferrer" className=" hover:underline">
-                      <FaWhatsapp style={{ height: '30px', width: '30px' }}  />
+                <Link href="#home">
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-25 group-hover:opacity-50 transition-opacity duration-300"></div>
+                    <div className="relative p-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm">
+                      <Image
+                        src={darkMode ? '/seclogo.png' : '/firstlogo.png'}
+                        width={150}
+                        height={70}
+                        alt="the logo"
+                        className="transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
 
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://github.com/psycho-70" target="_blank" rel="noopener noreferrer" className=" hover:underline">
-                      <FaGithub style={{ height: '30px', width: '30px' }} />
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center space-x-8">
+                {navItems.map((item, index) => (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="relative group"
+                  >
+                    <Link 
+                      href={`#${item.name.toLowerCase()}`}
+                      onClick={() => setActiveItem(item.name)}
+                    >
+                      <div className="relative px-4 py-2 rounded-full transition-all duration-300 group-hover:scale-105">
+                        {/* Background Gradient */}
+                        <div className={`absolute inset-0 bg-gradient-to-r ${item.color} opacity-0 group-hover:opacity-20 rounded-full transition-opacity duration-300`}></div>
+                        
+                        {/* Text */}
+                        <span className={`relative text-lg font-medium transition-all duration-300 ${
+                          activeItem === item.name 
+                            ? `bg-gradient-to-r ${item.color} bg-clip-text text-transparent` 
+                            : darkMode 
+                              ? 'text-gray-300 group-hover:text-white' 
+                              : 'text-gray-700 group-hover:text-gray-900'
+                        }`}>
+                          {item.name}
+                        </span>
 
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </motion.li>
-          </ul>
+                        {/* Animated Underline */}
+                        <div className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 bg-gradient-to-r ${item.color} transition-all duration-300 ${
+                          activeItem === item.name ? 'w-full' : 'w-0 group-hover:w-3/4'
+                        } rounded-full`}></div>
+
+                        {/* Hover Glow Effect */}
+                        <div className={`absolute inset-0 bg-gradient-to-r ${item.color} opacity-0 group-hover:opacity-10 rounded-full blur-lg transition-opacity duration-300`}></div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+
+                {/* Dark Mode Switch */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                  className="ml-4"
+                >
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur opacity-25"></div>
+                    <div className="relative">
+                      <MaterialUISwitch checked={darkMode} onChange={toggleDarkMode} />
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Mobile Menu Button */}
+              <div className="md:hidden">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="relative"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur opacity-25"></div>
+                  <IconButton 
+                    onClick={toggleDrawer(true)}
+                    className={`relative ${
+                      darkMode ? 'text-white' : 'text-gray-700'
+                    } p-3 bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm rounded-full`}
+                  >
+                    <IoMdMenu size={28} />
+                  </IconButton>
+                </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Mobile Drawer */}
+        <Drawer
+          anchor="right"
+          open={isMenuOpen}
+          onClose={toggleDrawer(false)}
+          PaperProps={{
+            style: {
+              width: "85%",
+              maxWidth: "400px",
+              background: darkMode 
+                ? 'linear-gradient(135deg, #1f2937 0%, #111827 100%)' 
+                : 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+              backdropFilter: 'blur(20px)',
+            },
+          }}
+        >
+          <div className="relative h-full">
+            {/* Decorative Background */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-20 right-10 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-xl"></div>
+              <div className="absolute bottom-20 left-10 w-24 h-24 bg-gradient-to-br from-pink-500/10 to-orange-500/10 rounded-full blur-xl"></div>
+            </div>
+
+            <div className="relative z-10 p-6">
+              {/* Close Button */}
+              <div className="flex justify-end mb-8">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <IconButton 
+                    onClick={toggleDrawer(false)}
+                    className={`${
+                      darkMode ? 'text-white' : 'text-gray-700'
+                    } p-3 bg-gradient-to-r from-red-500/10 to-pink-500/10 backdrop-blur-sm rounded-full`}
+                  >
+                    <IoMdClose size={28} />
+                  </IconButton>
+                </motion.div>
+              </div>
+
+              {/* Mobile Navigation Items */}
+              <div className="space-y-4">
+                {navItems.map((item, index) => (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    className="relative group"
+                  >
+                    <Link 
+                      href={`#${item.name.toLowerCase()}`}
+                      onClick={() => {
+                        setActiveItem(item.name);
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      <div className={`relative p-4 rounded-2xl transition-all duration-300 group-hover:scale-105 ${
+                        darkMode ? 'bg-gray-800/50' : 'bg-white/50'
+                      } backdrop-blur-sm border ${
+                        darkMode ? 'border-gray-700/50' : 'border-gray-200/50'
+                      }`}>
+                        {/* Background Gradient */}
+                        <div className={`absolute inset-0 bg-gradient-to-r ${item.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300`}></div>
+                        
+                        {/* Content */}
+                        <div className="relative flex items-center space-x-4">
+                          <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${item.color} ${
+                            activeItem === item.name ? 'opacity-100' : 'opacity-50'
+                          }`}></div>
+                          <span className={`text-xl font-medium transition-all duration-300 ${
+                            activeItem === item.name 
+                              ? `bg-gradient-to-r ${item.color} bg-clip-text text-transparent` 
+                              : darkMode 
+                                ? 'text-gray-300 group-hover:text-white' 
+                                : 'text-gray-700 group-hover:text-gray-900'
+                          }`}>
+                            {item.name}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Dark Mode Switch for Mobile */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className="mt-8 flex items-center justify-center"
+              >
+                <div className={`p-4 rounded-2xl ${
+                  darkMode ? 'bg-gray-800/50' : 'bg-white/50'
+                } backdrop-blur-sm border ${
+                  darkMode ? 'border-gray-700/50' : 'border-gray-200/50'
+                }`}>
+                  <div className="flex items-center space-x-4">
+                    <span className={`text-lg font-medium ${
+                      darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      {darkMode ? 'Dark Mode' : 'Light Mode'}
+                    </span>
+                    <MaterialUISwitch checked={darkMode} onChange={toggleDarkMode} />
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </Drawer>
       </nav>
-      <div className="h-[1px] w-full bg-white"></div>
+
+      {/* Spacer for fixed navbar */}
+      <div className="h-20"></div>
     </>
   );
 };

@@ -2,6 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Apply Pacifico for specific elements */
+.pacifico-font {
+  font-family: 'Pacifico', cursive;
+}
+
+/* ===== GLOW EFFECT ===== */
+@layer utilities {
+  .drop-shadow-glow {
+    text-shadow: 
+      0 0 10px rgba(230, 79, 254, 0.7),
+      0 0 20px rgba(230, 79, 254, 0.5);
+  }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.6; }
+}
+.gradient-text {
+  background: linear-gradient(to right, #E64FFE, #5E5CFF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.pulse-glow {
+  animation: pulse-glow 2s infinite ease-in-out;
+}
+.dark-highlight {
+  background-color: rgba(230, 79, 254, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+/* Apply Play (regular and bold) */
+.play-regular {
+  font-family: 'Play', sans-serif;
+  font-weight: 400;
+}
+.play-bold {
+  font-family: 'Play', sans-serif;
+  font-weight: 700;
+}
+
+/* Apply Libertinus Mono (monospace font) */
+.libertinus-mono {
+  font-family: 'Libertinus Mono', monospace;
+}
 .custom-background {
   background-image: repeating-linear-gradient(135deg, rgb(0,0,0) 0px, rgb(0,0,0) 10px,transparent 10px, transparent 11px),repeating-linear-gradient(22.5deg, rgb(0,0,0) 0px, rgb(0,0,0) 10px,transparent 10px, transparent 11px),linear-gradient(90deg, hsl(194,74%,56%),hsl(266,74%,56%),hsl(338,74%,56%),hsl(50,74%,56%),hsl(122,74%,56%))
 }

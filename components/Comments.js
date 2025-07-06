@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useAppContext } from '@/app/Context/AppContext';
+
 const Comments = () => {
+  const { darkMode } = useAppContext();
   const [comment, setComment] = useState('');
   const [username, setUsername] = useState('');
   const [comments, setComments] = useState([]);
-  const [visibleComments, setVisibleComments] = useState(3); // Initial visible comments
+  const [visibleComments, setVisibleComments] = useState(3);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -61,105 +64,315 @@ const Comments = () => {
   };
 
   return (
-    <>
-      <h1 className="text-center text-2xl font-bold py-4">Add your Comments below</h1>
-      <div className='h-[1px] w-full bg-white'></div>
-      <div className="bg-slate-800 flex justify-center flex-wrap p-4">
-        <div className="right w-full md:w-1/2 p-4">
-          <h1 className='text-red-500 font-bold uppercase p-2 text-xl'>Join the Discussion</h1>
-          <header className="formhaeder px-2 capitalize text-xl">
-            If you ask something, please put the comments below
-          </header>
-          <form className="w-full p-2" onSubmit={handleSubmit}>
-            <label htmlFor="username" className="block text-white mb-2">
-              Your Name:
-            </label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={username}
-              onChange={handleChangeUsername}
-              maxLength={20}
-              minLength={6}
-              className="w-full p-2 mb-4 border border-gray-300 text-black rounded-lg"
-              required
-            />
-            <label htmlFor="comment" className="block text-white mb-2">
-              Comment:
-            </label>
-            <textarea
-              rows={3}
-              id="comment"
-              name="comment"
-              value={comment}
-              onChange={handleChangeComment}
-              className="w-full p-2 mb-4 border border-gray-300 rounded-lg text-black"
-              required
-            />
-            <button
-              type="submit"
-              className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-            >
-              Submit
-            </button>
-          </form>
-        </div>
+    <div className={`min-h-screen transition-all duration-700 ${
+      darkMode 
+        ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50'
+    }`}>
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className={`absolute top-20 left-20 w-72 h-72 rounded-full opacity-20 blur-3xl animate-pulse ${
+          darkMode ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gradient-to-r from-blue-400 to-purple-400'
+        }`}></div>
+        <div className={`absolute bottom-20 right-20 w-96 h-96 rounded-full opacity-20 blur-3xl animate-pulse delay-1000 ${
+          darkMode ? 'bg-gradient-to-r from-blue-500 to-cyan-500' : 'bg-gradient-to-r from-pink-400 to-purple-400'
+        }`}></div>
+      </div>
 
-        <div className="left p-0 md:px-2 w-full md:w-1/2 overflow-y-auto">
-          <h1 className="text-center font-bold text-xl p-4">Comments</h1>
-          <ul className="list-none pl-0">
-            {error && <li className="text-red-500">{error}</li>}
-            {comments.slice(0, visibleComments).map((comment) => (
-              <li
-                key={comment.id}
-                className="border p-0 md:p-4 mb-2 rounded-lg break-words"
-              >
-                <div className="flex items-center mb-2">
-                  <Image
-                    src='/avatar-man.gif'
-                    width={40}
-                    height={40}
-                    alt={comment.username}
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                  <span className="font-bold">{comment.username}</span>
-                </div>
-                <p
-                  className="mb-2 px-12 whitespace-normal overflow-auto"
-                  style={{ maxHeight: '120px', wordWrap: 'break-word' }}
-                >
-                  {comment.text}
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">
-                    {new Date(comment.createdAt).toLocaleString()}
-                  </span>
-                  <button
-                    onClick={() => handleLike(comment.id)}
-                    className={`text-sm px-3 py-1 m-2 rounded ${comment.liked ? 'bg-green-500' : 'bg-blue-500'} text-white`}
-                    disabled={comment.liked}
-                  >
-                    Like ({comment.likes})
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-          {visibleComments < comments.length && (
-            <div className="flex justify-center items-center mt-4">
-              <button
-                onClick={handleLoadMore}
-                className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-              >
-                Load More ({comments.length - visibleComments} remaining)
-              </button>
-            </div>
-          )}
+      {/* Header Section */}
+      <div className="relative z-10 pt-16 pb-8">
+        <div className="text-center mb-8">
+          <h1 className={`text-4xl md:text-5xl font-bold mb-4 ${
+            darkMode ? 'text-white' : 'text-gray-800'
+          }`}>
+            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+              Share Your Thoughts
+            </span>
+          </h1>
+          <p className={`text-lg md:text-xl ${
+            darkMode ? 'text-gray-300' : 'text-gray-600'
+          }`}>
+            Join the conversation and let your voice be heard
+          </p>
+        </div>
+        
+        {/* Decorative Line */}
+        <div className="flex justify-center">
+          <div className={`h-1 w-32 rounded-full ${
+            darkMode 
+              ? 'bg-gradient-to-r from-purple-400 to-pink-400' 
+              : 'bg-gradient-to-r from-blue-400 to-purple-400'
+          }`}></div>
         </div>
       </div>
-      <div className="h-[1px] w-full bg-white"></div>
-    </>
+
+      {/* Main Content */}
+      <div className="relative z-10 container mx-auto px-4 pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* Comment Form Section */}
+          <div className={`p-8 rounded-3xl backdrop-blur-sm border transition-all duration-500 hover:scale-105 ${
+            darkMode 
+              ? 'bg-gradient-to-br from-white/10 to-white/5 border-white/20 shadow-2xl shadow-purple-500/20' 
+              : 'bg-gradient-to-br from-white/70 to-white/90 border-white/40 shadow-2xl shadow-blue-500/20'
+          }`}>
+            <div className="flex items-center mb-6">
+              <div className={`p-3 rounded-full mr-4 ${
+                darkMode 
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500' 
+                  : 'bg-gradient-to-r from-blue-500 to-purple-500'
+              }`}>
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <h2 className={`text-2xl font-bold ${
+                darkMode ? 'text-white' : 'text-gray-800'
+              }`}>
+                Join the Discussion
+              </h2>
+            </div>
+            
+            <p className={`mb-6 text-lg ${
+              darkMode ? 'text-gray-300' : 'text-gray-600'
+            }`}>
+              Share your thoughts and connect with our community
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="relative">
+                <label htmlFor="username" className={`block text-sm font-medium mb-2 ${
+                  darkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>
+                  Your Name ✨
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={handleChangeUsername}
+                  maxLength={20}
+                  minLength={6}
+                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 focus:outline-none focus:ring-0 ${
+                    darkMode 
+                      ? 'bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-purple-400 focus:bg-gray-800/70' 
+                      : 'bg-white/80 border-gray-300 text-gray-800 placeholder-gray-500 focus:border-blue-400 focus:bg-white'
+                  }`}
+                  placeholder="Enter your amazing name..."
+                  required
+                />
+                <div className="absolute right-3 top-9">
+                  <span className={`text-sm ${
+                    darkMode ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
+                    {username.length}/20
+                  </span>
+                </div>
+              </div>
+
+              <div className="relative">
+                <label htmlFor="comment" className={`block text-sm font-medium mb-2 ${
+                  darkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>
+                  Your Comment 💭
+                </label>
+                <textarea
+                  rows={4}
+                  id="comment"
+                  value={comment}
+                  onChange={handleChangeComment}
+                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-300 focus:outline-none focus:ring-0 resize-none ${
+                    darkMode 
+                      ? 'bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-purple-400 focus:bg-gray-800/70' 
+                      : 'bg-white/80 border-gray-300 text-gray-800 placeholder-gray-500 focus:border-blue-400 focus:bg-white'
+                  }`}
+                  placeholder="Share your thoughts with the world..."
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
+                  darkMode 
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30' 
+                    : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg shadow-blue-500/30'
+                }`}
+              >
+                🚀 Share Your Thoughts
+              </button>
+            </form>
+          </div>
+
+          {/* Comments Display Section */}
+          <div className={`p-8 rounded-3xl backdrop-blur-sm border ${
+            darkMode 
+              ? 'bg-gradient-to-br from-white/10 to-white/5 border-white/20 shadow-2xl shadow-blue-500/20' 
+              : 'bg-gradient-to-br from-white/70 to-white/90 border-white/40 shadow-2xl shadow-purple-500/20'
+          }`}>
+            <div className="flex items-center mb-6">
+              <div className={`p-3 rounded-full mr-4 ${
+                darkMode 
+                  ? 'bg-gradient-to-r from-blue-500 to-cyan-500' 
+                  : 'bg-gradient-to-r from-purple-500 to-pink-500'
+              }`}>
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-2-2V10a2 2 0 012-2h8z" />
+                </svg>
+              </div>
+              <h2 className={`text-2xl font-bold ${
+                darkMode ? 'text-white' : 'text-gray-800'
+              }`}>
+                Community Voice ({comments.length})
+              </h2>
+            </div>
+
+            <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
+              {error && (
+                <div className="p-4 bg-red-500/20 border border-red-500/30 rounded-xl text-red-400">
+                  {error}
+                </div>
+              )}
+              
+              {comments.slice(0, visibleComments).map((comment) => (
+                <div
+                  key={comment.id}
+                  className={`p-6 rounded-2xl border transition-all duration-300 hover:scale-105 ${
+                    darkMode 
+                      ? 'bg-gradient-to-r from-gray-800/50 to-gray-700/50 border-gray-600/50 hover:border-purple-400/50' 
+                      : 'bg-gradient-to-r from-white/80 to-white/90 border-gray-200/50 hover:border-blue-400/50'
+                  }`}
+                >
+                  <div className="flex items-start mb-4">
+                    <div className="relative">
+                      <Image
+                        src='/avatar-man.gif'
+                        width={48}
+                        height={48}
+                        alt={comment.username}
+                        className="w-12 h-12 rounded-full border-2 border-purple-400 shadow-lg"
+                      />
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div className="ml-4 flex-1">
+                      <div className="flex items-center justify-between">
+                        <h3 className={`font-bold text-lg ${
+                          darkMode ? 'text-white' : 'text-gray-800'
+                        }`}>
+                          {comment.username}
+                        </h3>
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          darkMode 
+                            ? 'bg-gray-700 text-gray-300' 
+                            : 'bg-gray-200 text-gray-600'
+                        }`}>
+                          {new Date(comment.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className={`mt-2 text-sm ${
+                        darkMode ? 'text-gray-400' : 'text-gray-500'
+                      }`}>
+                        {new Date(comment.createdAt).toLocaleTimeString()}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <p className={`mb-4 text-base leading-relaxed ${
+                    darkMode ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
+                    {comment.text}
+                  </p>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <button
+                        onClick={() => handleLike(comment.id)}
+                        disabled={comment.liked}
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 ${
+                          comment.liked 
+                            ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white cursor-not-allowed' 
+                            : darkMode 
+                              ? 'bg-gray-700 text-gray-300 hover:bg-gradient-to-r hover:from-pink-500 hover:to-red-500 hover:text-white' 
+                              : 'bg-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-pink-500 hover:to-red-500 hover:text-white'
+                        }`}
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                        </svg>
+                        <span className="font-medium">{comment.likes}</span>
+                      </button>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <div className={`w-2 h-2 rounded-full ${
+                        darkMode ? 'bg-purple-400' : 'bg-blue-400'
+                      }`}></div>
+                      <div className={`w-2 h-2 rounded-full ${
+                        darkMode ? 'bg-pink-400' : 'bg-purple-400'
+                      }`}></div>
+                      <div className={`w-2 h-2 rounded-full ${
+                        darkMode ? 'bg-blue-400' : 'bg-pink-400'
+                      }`}></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {comments.length === 0 && (
+                <div className="text-center py-12">
+                  <div className={`text-6xl mb-4 ${
+                    darkMode ? 'text-gray-600' : 'text-gray-400'
+                  }`}>
+                    💭
+                  </div>
+                  <p className={`text-lg ${
+                    darkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
+                    Be the first to share your thoughts!
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            {visibleComments < comments.length && (
+              <div className="mt-6 text-center">
+                <button
+                  onClick={handleLoadMore}
+                  className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    darkMode 
+                      ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 shadow-lg shadow-blue-500/30' 
+                      : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30'
+                  }`}
+                >
+                  🔄 Load More ({comments.length - visibleComments} remaining)
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Custom Scrollbar Styles */}
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: ${darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+          border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: ${darkMode ? 'linear-gradient(to bottom, #8B5CF6, #EC4899)' : 'linear-gradient(to bottom, #3B82F6, #8B5CF6)'};
+          border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: ${darkMode ? 'linear-gradient(to bottom, #7C3AED, #DB2777)' : 'linear-gradient(to bottom, #2563EB, #7C3AED)'};
+        }
+      `}</style>
+    </div>
   );
 };
 
