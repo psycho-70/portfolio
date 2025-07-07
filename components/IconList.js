@@ -287,12 +287,7 @@ const ExperienceMetrics = () => {
   return (
     <div id="experience-metrics" className={`py-20 w-full mx-auto relative overflow-hidden `}>
       {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className={`absolute top-10 left-10 w-96 h-96 ${darkMode ? 'bg-purple-600' : 'bg-blue-400'} rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse`}></div>
-        <div className={`absolute bottom-10 right-10 w-96 h-96 ${darkMode ? 'bg-pink-600' : 'bg-purple-400'} rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-700`}></div>
-        <div className={`absolute top-1/2 left-1/2 w-96 h-96 ${darkMode ? 'bg-cyan-600' : 'bg-pink-400'} rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000`}></div>
-      </div>
-
+     
       <motion.div
         initial="hidden"
         animate={controls}
@@ -425,19 +420,7 @@ const ExperienceMetrics = () => {
           ))}
         </div>
 
-        {/* Bottom Decoration */}
-        <motion.div 
-          className="mt-16 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.5 }}
-        >
-          <div className={`inline-block px-6 py-3 rounded-full ${darkMode ? 'bg-gray-800/50' : 'bg-white/50'} backdrop-blur-xl border border-white/20`}>
-            <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              ✨ Powered by passion and dedication ✨
-            </span>
-          </div>
-        </motion.div>
+       
       </motion.div>
     </div>
   );

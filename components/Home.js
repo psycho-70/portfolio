@@ -106,7 +106,7 @@ const Home = () => {
     };
 
     return (
-        <section className={`w-full relative overflow-hidden mx-auto ${darkMode 
+        <section className={`w-full z-20 relative overflow-hidden mx-auto ${darkMode 
             ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900' 
             : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'} ${themeClasses.text} transition-all duration-500`}>
             <div className={`flex max-w-[1500px] mx-auto flex-wrap container ${themeClasses.text} justify-center items-start relative z-10`}>
@@ -163,30 +163,28 @@ const Home = () => {
                     </motion.p>
 
                     <motion.div 
-                        className='flex gap-6 mt-8'
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.8 }}
-                    >
-                        <button
-                            type="button"
-                            className={`group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 ${themeClasses.buttonPrimary} rounded-2xl focus:outline-none focus:ring-4 focus:ring-purple-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg`}
-                            onClick={handleOpenCVModal}
-                            disabled={pdfLoading}
-                        >
-                            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-2xl"></span>
-                            <FaEye className="mr-3 text-xl group-hover:rotate-12 transition-transform duration-300" />
-                            {pdfLoading ? 'Loading...' : 'Preview CV'}
-                        </button>
+  className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+>
+  <button
+    type="button"
+    className={`flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-medium rounded-lg ${themeClasses.buttonPrimary} transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-70`}
+    onClick={handleOpenCVModal}
+    disabled={pdfLoading}
+  >
+    <FaEye className="mr-2" />
+    {pdfLoading ? 'Loading...' : 'Preview CV'}
+  </button>
 
-                        <Link href="#project">
-                            <button className={`group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 ${themeClasses.buttonSecondary} rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg`}>
-                                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-2xl"></span>
-                                <FaRocket className="mr-3 text-xl group-hover:rotate-12 transition-transform duration-300" />
-                                Explore Projects
-                            </button>
-                        </Link>
-                    </motion.div>
+  <Link href="#project" className="block">
+    <button className={`flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-medium rounded-lg ${themeClasses.buttonSecondary} transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}>
+      <FaRocket className="mr-2" />
+      Explore Projects
+    </button>
+  </Link>
+</motion.div>
                 </motion.div>
 
                 <motion.div 

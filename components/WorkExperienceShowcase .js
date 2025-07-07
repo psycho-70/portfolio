@@ -127,7 +127,7 @@ const WorkExperienceShowcase = () => {
   }, [controls, isInView]);
 
   return (
-    <div className={`min-h-screen transition-all duration-700 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <div id="Experince" className={`min-h-screen  relative transition-all duration-700 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
     
       {/* Dark Mode Toggle */}
       <motion.button
