@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ExternalLink, Github, Calendar, Tag, X, ZoomIn, Moon, Sun } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ExternalLink, Github, Calendar, Tag, X, ZoomIn, Moon, Sun, Lock } from 'lucide-react';
 import { useAppContext } from '@/app/Context/AppContext';
-
 const ProjectShowcase = () => {
-  // const [darkMode, setDarkMode] = useState(false);
-    const { darkMode } = useAppContext();
-  
+const { darkMode } = useAppContext();  
   const [selectedProject, setSelectedProject] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isConfidentialModalOpen, setIsConfidentialModalOpen] = useState(false);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -28,6 +26,7 @@ const ProjectShowcase = () => {
       technologies: ["React", "Node.js", "MongoDB", "Express", "Tailwind CSS"],
       github: "https://github.com/yourusername/sowatolling",
       live: "https://sowatolling.com",
+      isConfidential: true,
       images: [
         "/project/Sowa/1 (1).png",
         "/project/Sowa/1 (2).png",
@@ -46,6 +45,7 @@ const ProjectShowcase = () => {
       technologies: ["React", "Next.js", "Tailwind CSS", "Stripe", "MongoDB"],
       github: "https://github.com/yourusername/natural-clam",
       live: "https://naturalclam.com",
+      isConfidential: true,
       images: [
         "/project/NC/1 (1).png",
         "/project/NC/1 (2).png",
@@ -64,6 +64,7 @@ const ProjectShowcase = () => {
       "technologies": ["HTML", "CSS", "JS", "React", "Web Audio API"],
       "github": "https://github.com/psycho-70/spotify-clone",
       "live": "https://github.com/psycho-70/spotify-clone",
+      "isConfidential": false,
       "images": [
         "/project/clone/1 (1).png",
         "/project/clone/1 (2).png",
@@ -91,6 +92,7 @@ const ProjectShowcase = () => {
       ],
       "github": "https://github.com/psycho-70/weatherapp",
       "live": "https://weatherapp-lilac-xi.vercel.app/",
+      "isConfidential": false,
       "images": [
         "/project/weather/1 (1).png",
         "/project/weather/1 (2).png",
@@ -128,6 +130,7 @@ const ProjectShowcase = () => {
       technologies: ["React", "Tailwind CSS", "Framer Motion","Material UI"],
       github: "https://github.com/psycho-70/portfolio",
       live: "https://informativeworld-furqan-khans-projects.vercel.app/",
+      isConfidential: false,
       images: [
         "/project/protfiolo/1 (1).png",
         "/project/protfiolo/1 (2).png",
@@ -167,6 +170,25 @@ const ProjectShowcase = () => {
     document.body.style.overflow = 'unset';
   };
 
+  // Confidential modal functions
+  const openConfidentialModal = () => {
+    setIsConfidentialModalOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeConfidentialModal = () => {
+    setIsConfidentialModalOpen(false);
+    document.body.style.overflow = 'unset';
+  };
+
+  // Handle link clicks for confidential projects
+  const handleLinkClick = (e, isConfidential) => {
+    if (isConfidential) {
+      e.preventDefault();
+      openConfidentialModal();
+    }
+  };
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -183,11 +205,14 @@ const ProjectShowcase = () => {
             break;
         }
       }
+      if (isConfidentialModalOpen && e.key === 'Escape') {
+        closeConfidentialModal();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isModalOpen]);
+  }, [isModalOpen, isConfidentialModalOpen]);
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % projects[selectedProject].images.length);
@@ -223,7 +248,7 @@ const ProjectShowcase = () => {
   const currentProject = projects[selectedProject];
 
   return (
-    <div className={` transition-all duration-500`}>
+    <div className={`transition-all duration-500`}>
       {/* Dark Mode Toggle */}
       <div className="fixed top-6 right-6 z-40">
         <button
@@ -256,42 +281,7 @@ const ProjectShowcase = () => {
 
       {/* Project Navigation */}
       <div className="container mx-auto px-6 py-8">
-        <div className="flex justify-center items-center space-x-4 mb-12">
-          <button
-            onClick={prevProject}
-            disabled={isAnimating}
-            className={`p-3 rounded-full ${themeClasses.cardBg} border ${themeClasses.cardBorder} backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          
-          <div className="flex space-x-2">
-            {projects.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  if (!isAnimating) {
-                    setSelectedProject(index);
-                    setSelectedImage(0);
-                  }
-                }}
-                className={`h-3 rounded-full transition-all duration-300 ${
-                  index === selectedProject 
-                    ? `bg-gradient-to-r ${currentProject.color} w-8` 
-                    : `w-3 ${darkMode ? 'bg-white/30 hover:bg-white/50' : 'bg-gray-400 hover:bg-gray-600'}`
-                }`}
-              />
-            ))}
-          </div>
-          
-          <button
-            onClick={nextProject}
-            disabled={isAnimating}
-            className={`p-3 rounded-full ${themeClasses.cardBg} border ${themeClasses.cardBorder} backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-        </div>
+        
 
         {/* Project Details */}
         <div className={`grid lg:grid-cols-2 gap-12 items-center transition-all duration-500 ${isAnimating ? 'opacity-50 transform translate-y-4' : 'opacity-100 transform translate-y-0'}`}>
@@ -341,7 +331,8 @@ const ProjectShowcase = () => {
                 href={currentProject.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center px-6 py-3 ${themeClasses.buttonPrimary} rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg text-white`}
+                onClick={(e) => handleLinkClick(e, currentProject.isConfidential)}
+                className={`flex items-center px-6 py-3 ${themeClasses.buttonPrimary} rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg text-white cursor-pointer`}
               >
                 <ExternalLink className="w-5 h-5 mr-2" />
                 Live Demo
@@ -350,7 +341,8 @@ const ProjectShowcase = () => {
                 href={currentProject.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center px-6 py-3 ${themeClasses.buttonSecondary} rounded-full font-semibold transition-all duration-300 transform hover:scale-105 backdrop-blur-sm border shadow-lg`}
+                onClick={(e) => handleLinkClick(e, currentProject.isConfidential)}
+                className={`flex items-center px-6 py-3 ${themeClasses.buttonSecondary} rounded-full font-semibold transition-all duration-300 transform hover:scale-105 backdrop-blur-sm border shadow-lg cursor-pointer`}
               >
                 <Github className="w-5 h-5 mr-2" />
                 View Code
@@ -400,6 +392,42 @@ const ProjectShowcase = () => {
             </div>
           </div>
         </div>
+        <div className="flex justify-center items-center space-x-4 py-12">
+          <button
+            onClick={prevProject}
+            disabled={isAnimating}
+            className={`p-3 rounded-full ${themeClasses.cardBg} border ${themeClasses.cardBorder} backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          
+          <div className="flex space-x-2">
+            {projects.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  if (!isAnimating) {
+                    setSelectedProject(index);
+                    setSelectedImage(0);
+                  }
+                }}
+                className={`h-3 rounded-full transition-all duration-300 ${
+                  index === selectedProject 
+                    ? `bg-gradient-to-r ${currentProject.color} w-8` 
+                    : `w-3 ${darkMode ? 'bg-white/30 hover:bg-white/50' : 'bg-gray-400 hover:bg-gray-600'}`
+                }`}
+              />
+            ))}
+          </div>
+          
+          <button
+            onClick={nextProject}
+            disabled={isAnimating}
+            className={`p-3 rounded-full ${themeClasses.cardBg} border ${themeClasses.cardBorder} backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
       </div>
 
       {/* Modal for Full Screen Image */}
@@ -445,6 +473,57 @@ const ProjectShowcase = () => {
                   }`}
                 />
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confidential Modal */}
+      {isConfidentialModalOpen && (
+        <div className={`fixed inset-0 ${themeClasses.modalBg} z-50 flex items-center justify-center backdrop-blur-sm`}>
+          <div className={`relative max-w-md w-full mx-4 ${themeClasses.cardBg} border ${themeClasses.cardBorder} backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden`}>
+            <div className={`bg-gradient-to-r ${currentProject.color} p-6`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-white/20 rounded-full">
+                    <Lock className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Confidential Project</h3>
+                </div>
+                <button
+                  onClick={closeConfidentialModal}
+                  className="p-1 hover:bg-white/20 rounded-full transition-all duration-300"
+                >
+                  <X className="w-5 h-5 text-white" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              <div className="text-center space-y-4">
+                <div className={`inline-flex items-center justify-center w-16 h-16 ${darkMode ? 'bg-red-500/20' : 'bg-red-100'} rounded-full`}>
+                  <Lock className={`w-8 h-8 ${darkMode ? 'text-red-400' : 'text-red-600'}`} />
+                </div>
+                
+                <div>
+                  <h4 className={`text-lg font-semibold mb-2 ${themeClasses.text}`}>
+                    Access Restricted
+                  </h4>
+                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
+                    This project contains confidential information and is not available for public viewing. 
+                    Please contact me directly for more information about this project.
+                  </p>
+                </div>
+                
+                <div className="pt-4">
+                  <button
+                    onClick={closeConfidentialModal}
+                    className={`w-full px-6 py-3 ${themeClasses.buttonPrimary} rounded-full font-semibold text-white transition-all duration-300 transform hover:scale-105 shadow-lg`}
+                  >
+                    Understood
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

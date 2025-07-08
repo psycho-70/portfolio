@@ -9,7 +9,7 @@ const Footer = () => {
     const { darkMode } = useAppContext();
 
     return (
-        <footer className={`relative w-full mt-20 overflow-hidden transition-all duration-700 ${
+        <footer className={`relative w-full  overflow-hidden transition-all duration-700 ${
             darkMode 
                 ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-black' 
                 : 'bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50'

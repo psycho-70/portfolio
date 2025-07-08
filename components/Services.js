@@ -86,11 +86,8 @@ const Services = () => {
     ];
 
     return (
-        <div className={`min-h-screen transition-all duration-700 ${
-            darkMode 
-                ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900' 
-                : 'bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50'
-        }`}>
+        <div className={`transition-all duration-700 
+          `}>
             <Head>
                 <title>My Services</title>
                 <meta name="description" content="Services offered by Designer and Developer" />

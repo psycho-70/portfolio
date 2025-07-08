@@ -64,11 +64,7 @@ const Comments = () => {
   };
 
   return (
-    <div className={`min-h-screen transition-all duration-700 ${
-      darkMode 
-        ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900' 
-        : 'bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50'
-    }`}>
+    <div className={` transition-all duration-700 `}>
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className={`absolute top-20 left-20 w-72 h-72 rounded-full opacity-20 blur-3xl animate-pulse ${
