@@ -37,24 +37,24 @@ const Home = () => {
 
     // Clean theme classes based on ProjectShowcase
     const themeClasses = {
-        background: darkMode 
-            ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900' 
+        background: darkMode
+            ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900'
             : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50',
         text: darkMode ? 'text-white' : 'text-gray-900',
         cardBg: darkMode ? 'bg-white/10' : 'bg-white/80',
         cardBorder: darkMode ? 'border-white/20' : 'border-gray-200',
         modalBg: darkMode ? 'bg-black/90' : 'bg-white/95',
-        buttonPrimary: darkMode 
-            ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600' 
+        buttonPrimary: darkMode
+            ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
             : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600',
-        buttonSecondary: darkMode 
-            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600' 
+        buttonSecondary: darkMode
+            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600'
             : 'bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600',
-        gradientText: darkMode 
-            ? 'bg-gradient-to-r from-purple-400 to-pink-400' 
+        gradientText: darkMode
+            ? 'bg-gradient-to-r from-purple-400 to-pink-400'
             : 'bg-gradient-to-r from-blue-600 to-purple-600',
-        skillGradient: darkMode 
-            ? 'bg-gradient-to-r from-green-400 to-blue-400' 
+        skillGradient: darkMode
+            ? 'bg-gradient-to-r from-green-400 to-blue-400'
             : 'bg-gradient-to-r from-blue-600 to-purple-600',
     };
 
@@ -76,13 +76,13 @@ const Home = () => {
     const handleOpenCVModal = async () => {
         setPdfLoading(true);
         setPdfError(false);
-        
+
         try {
             const response = await fetch(pdfUrl);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             setIsCVModalOpen(true);
         } catch (error) {
             console.error('Error loading PDF:', error);
@@ -106,17 +106,17 @@ const Home = () => {
     };
 
     return (
-        <section className={`w-full z-20 relative overflow-hidden mx-auto ${darkMode 
-            ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900' 
+        <section className={`w-full z-20 relative overflow-hidden mx-auto ${darkMode
+            ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900'
             : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'} ${themeClasses.text} transition-all duration-500`}>
             <div className={`flex max-w-[1500px] mx-auto flex-wrap container ${themeClasses.text} justify-center items-start relative z-10`}>
-                <motion.div 
+                <motion.div
                     className={`text-center md:w-[50%] mt-16 md:mt-32 flex flex-col gap-8 px-6`}
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <motion.h1 
+                    <motion.h1
                         className={`md:text-5xl text-3xl text-start font-bold leading-tight`}
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -133,7 +133,7 @@ const Home = () => {
                         </span>
                     </motion.h1>
 
-                    <motion.h2 
+                    <motion.h2
                         className='text-start text-xl md:text-2xl font-semibold'
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -150,7 +150,7 @@ const Home = () => {
                         </span>
                     </motion.h2>
 
-                    <motion.p 
+                    <motion.p
                         className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-start text-lg leading-relaxed w-full md:w-[520px] font-medium`}
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -162,32 +162,32 @@ const Home = () => {
                         large-scale web applications, including ERP systems and e-commerce platforms.
                     </motion.p>
 
-                    <motion.div 
-  className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8"
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
->
-  <button
-    type="button"
-    className={`flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-medium rounded-lg ${themeClasses.buttonPrimary} transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-70`}
-    onClick={handleOpenCVModal}
-    disabled={pdfLoading}
-  >
-    <FaEye className="mr-2" />
-    {pdfLoading ? 'Loading...' : 'Preview CV'}
-  </button>
+                    <motion.div
+                        className="flex whitespace-nowrap gap-3 sm:gap-4 mt-8"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <button
+                            type="button"
+                            className={`flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-medium rounded-lg ${themeClasses.buttonPrimary} transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-70`}
+                            onClick={handleOpenCVModal}
+                            disabled={pdfLoading}
+                        >
+                            <FaEye className="mr-2" />
+                            {pdfLoading ? 'Loading...' : 'Preview CV'}
+                        </button>
 
-  <Link href="#project" className="block">
-    <button className={`flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-medium rounded-lg ${themeClasses.buttonSecondary} transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}>
-      <FaRocket className="mr-2" />
-      Explore Projects
-    </button>
-  </Link>
-</motion.div>
+                        <Link href="#project" className="block">
+                            <button className={`flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-medium rounded-lg ${themeClasses.buttonSecondary} transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}>
+                                <FaRocket className="mr-2" />
+                                Explore Projects
+                            </button>
+                        </Link>
+                    </motion.div>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                     className='mt-16 md:mt-24'
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -207,8 +207,8 @@ const Home = () => {
 
                 <Iconlist />
 
-                <motion.div 
-                    className="absolute top-[20%] right-[20px] z-20"
+                <motion.div
+                    className="absolute top-[20%] md:block hidden right-[20px] z-20"
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 1 }}
@@ -280,13 +280,13 @@ const Home = () => {
 
             {/* Enhanced CV Preview Modal */}
             {isCVModalOpen && (
-                <motion.div 
+                <motion.div
                     className={`fixed inset-0 z-50 flex items-center justify-center ${themeClasses.modalBg} backdrop-blur-sm p-4`}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                 >
-                    <motion.div 
+                    <motion.div
                         className={`relative ${themeClasses.cardBg} border ${themeClasses.cardBorder} backdrop-blur-sm rounded-3xl p-8 w-full max-w-6xl h-[90vh] flex flex-col shadow-2xl`}
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -299,11 +299,11 @@ const Home = () => {
                         >
                             <FaX className="text-xl" />
                         </button>
-                        
+
                         <h2 className={`text-3xl font-bold mb-6 ${themeClasses.gradientText} bg-clip-text text-transparent`}>
                             My CV Preview
                         </h2>
-                        
+
                         <div className="flex-1 mb-6 min-h-0">
                             {pdfError ? (
                                 <div className="flex flex-col items-center justify-center h-full">
@@ -327,20 +327,20 @@ const Home = () => {
                                 </div>
                             ) : (
                                 <div className={`w-full h-full rounded-2xl overflow-hidden shadow-2xl`}>
-                                    <iframe 
+                                    <iframe
                                         src={`${pdfUrl}#view=FitH`}
                                         className="w-full h-full border-0 rounded-2xl"
                                         title="CV Preview"
                                         onError={() => setPdfError(true)}
                                     >
-                                        <p>Your browser does not support PDFs. 
+                                        <p>Your browser does not support PDFs.
                                             <a href={pdfUrl} className="text-blue-500 underline">Download the PDF</a>.
                                         </p>
                                     </iframe>
                                 </div>
                             )}
                         </div>
-                        
+
                         <div className="flex justify-center gap-6">
                             <button
                                 onClick={handleDownloadCV}

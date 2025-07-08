@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, useAnimation, useInView } from 'framer-motion';
 import { Calendar, MapPin, Users, Code, Award, ArrowRight, ExternalLink, Clock, Building2, GraduationCap, Briefcase } from 'lucide-react';
+import { useAppContext } from '@/app/Context/AppContext';
 
 const WorkExperienceShowcase = () => {
   const [hoveredExperience, setHoveredExperience] = useState(null);
@@ -8,9 +9,30 @@ const WorkExperienceShowcase = () => {
   const controls = useAnimation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, threshold: 0.1 });
-  
-  // Mock dark mode - you can replace this with your AppContext
-  const [darkMode, setDarkMode] = useState(true);
+  const { darkMode, toggleDarkMode } = useAppContext();
+
+  // Theme classes
+  const themeClasses = {
+    background: darkMode
+      ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900'
+      : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50',
+    text: darkMode ? 'text-white' : 'text-gray-900',
+    cardBg: darkMode ? 'bg-white/10' : 'bg-white/80',
+    cardBorder: darkMode ? 'border-white/20' : 'border-gray-200',
+    modalBg: darkMode ? 'bg-black/90' : 'bg-white/95',
+    buttonPrimary: darkMode
+      ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
+      : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600',
+    buttonSecondary: darkMode
+      ? 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600'
+      : 'bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600',
+    gradientText: darkMode
+      ? 'bg-gradient-to-r from-purple-400 to-pink-400'
+      : 'bg-gradient-to-r from-blue-600 to-purple-600',
+    skillGradient: darkMode
+      ? 'bg-gradient-to-r from-green-400 to-blue-400'
+      : 'bg-gradient-to-r from-blue-600 to-purple-600',
+  };
 
   const experiences = [
     {
@@ -84,11 +106,11 @@ const WorkExperienceShowcase = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'current':
-        return 'from-green-500 to-emerald-500';
+        return darkMode ? 'from-green-500 to-emerald-500' : 'from-green-400 to-emerald-400';
       case 'completed':
-        return 'from-gray-500 to-gray-600';
+        return darkMode ? 'from-gray-500 to-gray-600' : 'from-gray-400 to-gray-500';
       default:
-        return 'from-blue-500 to-cyan-500';
+        return darkMode ? 'from-blue-500 to-cyan-500' : 'from-blue-400 to-cyan-400';
     }
   };
 
@@ -127,13 +149,13 @@ const WorkExperienceShowcase = () => {
   }, [controls, isInView]);
 
   return (
-    <div id="Experince" className={`min-h-screen  relative transition-all duration-700 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <div id="Experince" className={`relative transition-all duration-700 `}>
     
       {/* Dark Mode Toggle */}
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        onClick={() => setDarkMode(!darkMode)}
+        onClick={toggleDarkMode}
         className={`fixed top-6 right-6 z-20 p-3 rounded-full backdrop-blur-lg border transition-all duration-300 ${
           darkMode 
             ? 'bg-gray-800/50 border-gray-700/30 text-yellow-400 hover:bg-gray-800/70' 
@@ -170,10 +192,8 @@ const WorkExperienceShowcase = () => {
             </div>
           </motion.div>
           
-          <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-4 ${
-            darkMode ? 'text-white' : 'text-gray-900'
-          }`}>
-            Work <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Experience</span>
+          <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-4 ${themeClasses.text}`}>
+            Work <span className={`bg-gradient-to-r ${themeClasses.gradientText} bg-clip-text text-transparent`}>Experience</span>
           </h1>
           
           <p className={`text-lg md:text-xl max-w-2xl mx-auto ${
@@ -239,7 +259,7 @@ const WorkExperienceShowcase = () => {
                           {exp.icon}
                         </div>
                         <div>
-                          <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                          <h3 className={`text-xl font-bold ${themeClasses.text}`}>
                             {exp.position}
                           </h3>
                           <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -340,7 +360,7 @@ const WorkExperienceShowcase = () => {
                     }`}>
                       {/* All Achievements */}
                       <div className="mb-6">
-                        <h4 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <h4 className={`text-lg font-semibold mb-3 ${themeClasses.text}`}>
                           Key Achievements
                         </h4>
                         <ul className="space-y-2">
@@ -357,7 +377,7 @@ const WorkExperienceShowcase = () => {
 
                       {/* Projects */}
                       <div className="mb-6">
-                        <h4 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <h4 className={`text-lg font-semibold mb-3 ${themeClasses.text}`}>
                           Notable Projects
                         </h4>
                         <div className="flex flex-wrap gap-2">
@@ -376,7 +396,7 @@ const WorkExperienceShowcase = () => {
 
                       {/* All Technologies */}
                       <div>
-                        <h4 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <h4 className={`text-lg font-semibold mb-3 ${themeClasses.text}`}>
                           Technologies Used
                         </h4>
                         <div className="flex flex-wrap gap-2">
@@ -417,7 +437,7 @@ const WorkExperienceShowcase = () => {
               : 'bg-white/60 border-white/40'
           }`}>
             <div className="text-center">
-              <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              <div className={`text-2xl font-bold ${themeClasses.text}`}>
                 {experiences.length}
               </div>
               <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -426,7 +446,7 @@ const WorkExperienceShowcase = () => {
             </div>
             <div className={`w-px h-8 ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
             <div className="text-center">
-              <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              <div className={`text-2xl font-bold ${themeClasses.text}`}>
                 {experiences.reduce((total, exp) => total + exp.technologies.length, 0)}
               </div>
               <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -435,7 +455,7 @@ const WorkExperienceShowcase = () => {
             </div>
             <div className={`w-px h-8 ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
             <div className="text-center">
-              <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              <div className={`text-2xl font-bold ${themeClasses.text}`}>
                 {experiences.reduce((total, exp) => total + exp.projects.length, 0)}
               </div>
               <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>

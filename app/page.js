@@ -18,6 +18,27 @@ const Page = () => {
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
   const { darkMode, toggleDarkMode } = useAppContext();
+  const themeClasses = {
+    background: darkMode
+      ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900'
+      : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50',
+    text: darkMode ? 'text-white' : 'text-gray-900',
+    cardBg: darkMode ? 'bg-white/10' : 'bg-white/80',
+    cardBorder: darkMode ? 'border-white/20' : 'border-gray-200',
+    modalBg: darkMode ? 'bg-black/90' : 'bg-white/95',
+    buttonPrimary: darkMode
+      ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
+      : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600',
+    buttonSecondary: darkMode
+      ? 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600'
+      : 'bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600',
+    gradientText: darkMode
+      ? 'bg-gradient-to-r from-purple-400 to-pink-400'
+      : 'bg-gradient-to-r from-blue-600 to-purple-600',
+    skillGradient: darkMode
+      ? 'bg-gradient-to-r from-green-400 to-blue-400'
+      : 'bg-gradient-to-r from-blue-600 to-purple-600',
+  };
 
   useEffect(() => {
     const fullText = [
@@ -39,7 +60,7 @@ const Page = () => {
       }
 
       const line = fullText[lineIndex];
-      
+
       if (charIndex < line.length) {
         currentText += line[charIndex];
         setTerminalText(currentText);
@@ -78,18 +99,18 @@ const Page = () => {
           {terminalText}
           {!waitingForUser && <span className="animate-pulse">_</span>}
         </div>
-        
+
         {showModeQuestion && (
           <div className="mt-6 text-center animate-fade-in">
             <p className="mb-4">Select your preferred interface mode:</p>
             <div className="flex gap-4 justify-center">
-              <button 
+              <button
                 onClick={() => handleModeSelection(true)}
                 className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
               >
                 🌙 Dark Mode
               </button>
-              <button 
+              <button
                 onClick={() => handleModeSelection(false)}
                 className="px-6 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors"
               >
@@ -112,28 +133,30 @@ const Page = () => {
         <div id="about">
           {/* <About /> */}
         </div>
-        <div id="skill">
-          <Skill />
+        <div className={`bg-gradient-to-br ${themeClasses.background} ${themeClasses.text}`}>
+         
+            <div id="skill">
+              <Skill />
+            </div>
+            <div id="Experince">
+              <WorkExperienceShowcase />
+            </div>
+            <div id="project">
+              <Project />
+            </div>
+            <div id="services">
+              <Services />
+            </div>
+            <div id="team">
+              <TeamMemberCard />
+            </div>
+            <div id="comments">
+              <Comments />
+            </div>
+          </div>
         </div>
-        <div id="Experince">
-          <WorkExperienceShowcase />
-        </div>
-        <div id="project">
-          <Project />
-        </div>
-        <div id="services">
-          <Services />
-        </div>
-        <div id="team">
-          <TeamMemberCard/>
-        </div>
-        <div id="comments">
-          <Comments />
-        </div>
-       
       </div>
-    </div>
-  );
+      );
 };
 
-export default Page;
+      export default Page;

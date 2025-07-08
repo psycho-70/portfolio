@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ExternalLink, Github, Calendar, Tag, X, ZoomIn, Moon, Sun } from 'lucide-react';
-import { useAppContext } from '@/app/Context/AppContext'; // Make sure this path is correct
+import { useAppContext } from '@/app/Context/AppContext';
 
 const ProjectShowcase = () => {
-  // Use the context for dark mode management
-  const { darkMode, toggleDarkMode } = useAppContext();
+  // const [darkMode, setDarkMode] = useState(false);
+    const { darkMode } = useAppContext();
   
   const [selectedProject, setSelectedProject] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -12,61 +12,129 @@ const ProjectShowcase = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Sample project data
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  // Your real projects data
   const projects = [
     {
       id: 1,
-      title: "E-Commerce Platform",
-      description: "A modern, responsive e-commerce platform built with React and Node.js. Features include real-time inventory management, secure payment processing, and advanced search functionality.",
-      longDescription: "This comprehensive e-commerce solution provides businesses with everything they need to sell online. Built using modern web technologies, it offers a seamless shopping experience with advanced features like AI-powered product recommendations, real-time chat support, and comprehensive analytics dashboard.",
-      category: "Web Development",
+      title: "Sowatolling E-commerce Platform",
+      description: "A comprehensive e-commerce platform with modern design, user-friendly interface, and complete shopping functionality including cart, checkout, and user management.",
+      longDescription: "Sowatolling is a full-featured e-commerce platform built with modern web technologies. It includes a responsive design, product catalog, shopping cart functionality, secure checkout process, user authentication, and admin dashboard. The platform also features a WordPress-like editor for content management and dynamic footer links creation.",
+      category: "E-commerce",
       date: "2024-01-15",
-      technologies: ["React", "Node.js", "MongoDB", "Stripe", "AWS"],
-      github: "https://github.com/example/ecommerce",
-      live: "https://ecommerce-demo.com",
+      technologies: ["React", "Node.js", "MongoDB", "Express", "Tailwind CSS"],
+      github: "https://github.com/yourusername/sowatolling",
+      live: "https://sowatolling.com",
       images: [
-        "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&h=600&fit=crop"
+        "/project/Sowa/1 (1).png",
+        "/project/Sowa/1 (2).png",
+        "/project/Sowa/1 (3).png",
+        "/project/Sowa/1 (4).png"
       ],
       color: "from-purple-500 to-pink-500"
     },
     {
       id: 2,
-      title: "AI-Powered Dashboard",
-      description: "An intelligent analytics dashboard with machine learning capabilities for data visualization and predictive insights. Built with Python, TensorFlow, and React.",
-      longDescription: "This cutting-edge dashboard leverages artificial intelligence to provide actionable insights from complex datasets. Features include automated report generation, predictive analytics, and customizable visualizations that help businesses make data-driven decisions.",
-      category: "AI/ML",
+      title: "Natural Clam E-commerce",
+      description: "A specialized e-commerce website for natural clam products with elegant design, product showcasing, and seamless shopping experience.",
+      longDescription: "Natural Clam is an e-commerce platform dedicated to natural clam products. It features a clean, elegant design that highlights product quality, detailed product information, customer reviews, and a smooth checkout process. The website emphasizes natural and organic qualities with earth-tone aesthetics.",
+      category: "E-commerce",
       date: "2024-02-20",
-      technologies: ["Python", "TensorFlow", "React", "D3.js", "PostgreSQL"],
-      github: "https://github.com/example/ai-dashboard",
-      live: "https://ai-dashboard-demo.com",
+      technologies: ["React", "Next.js", "Tailwind CSS", "Stripe", "MongoDB"],
+      github: "https://github.com/yourusername/natural-clam",
+      live: "https://naturalclam.com",
       images: [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop"
-      ],
-      color: "from-blue-500 to-cyan-500"
-    },
-    {
-      id: 3,
-      title: "Mobile Fitness App",
-      description: "A comprehensive fitness tracking app with workout planning, nutrition tracking, and social features. Built with React Native and Firebase.",
-      longDescription: "This mobile application helps users achieve their fitness goals through personalized workout plans, nutrition tracking, and community features. The app includes AI-powered form correction, progress tracking, and social challenges to keep users motivated.",
-      category: "Mobile Development",
-      date: "2024-03-10",
-      technologies: ["React Native", "Firebase", "Redux", "Google Fit API"],
-      github: "https://github.com/example/fitness-app",
-      live: "https://fitness-app-demo.com",
-      images: [
-        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1434596922112-19c563067271?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1549576490-b0b4831ef60a?w=800&h=600&fit=crop"
+        "/project/NC/1 (1).png",
+        "/project/NC/1 (2).png",
+        "/project/NC/1 (3).png",
+        "/project/NC/1 (4).png"
       ],
       color: "from-green-500 to-emerald-500"
+    },
+    {
+      "id": 3,
+      "title": "Spotify Clone, Netflix Clone, Twitter Clone, Password Generator, OP Ultra Edit Website, Yellow Zip Archive",
+      "description": "A feature-rich Spotify clone with music streaming capabilities, playlist management, and modern UI/UX design.",
+      "longDescription": "This Spotify clone replicates the core functionality of the popular music streaming platform. It includes features like music playback, playlist creation and management, search functionality, user profiles, and a responsive design that works across all devices. The app provides an immersive music experience with smooth transitions and modern design elements.",
+      "category": "Music App",
+      "date": "2024-03-10",
+      "technologies": ["HTML", "CSS", "JS", "React", "Web Audio API"],
+      "github": "https://github.com/psycho-70/spotify-clone",
+      "live": "https://github.com/psycho-70/spotify-clone",
+      "images": [
+        "/project/clone/1 (1).png",
+        "/project/clone/1 (2).png",
+        "/project/clone/1 (3).png",
+        "/project/clone/1 (4).png"
+      ],
+      "color": "from-green-400 to-green-600"
+    },
+    {
+      "id": 4,
+      "title": " Weather App",
+      "description": "A comprehensive weather application with real-time forecasts, air quality index, OAuth authentication, and dark mode support.",
+      "longDescription": "This advanced weather dashboard provides detailed weather analytics including current conditions, hourly/daily forecasts, and air quality index reports. Key features include:\n\n- Secure OAuth authentication with Google Sign-In\n- Dark/Light mode toggle for optimal viewing\n- Interactive weather maps and data visualizations\n- Air quality monitoring with health recommendations\n- Personalized weather blogs and articles\n- Multi-location support with favorites system\n- Weather alerts and severe condition warnings\n\nBuilt with modern technologies for optimal performance and user experience.",
+      "category": "Utility App",
+      "date": "2024-04-05",
+      "technologies": [
+        "Next.js",
+        "OpenWeather API",
+        "AirVisual API",
+        "Tailwind CSS",
+        "Node.js",
+        "Firebase",
+        "OAuth",
+        "Next-Auth"
+      ],
+      "github": "https://github.com/psycho-70/weatherapp",
+      "live": "https://weatherapp-lilac-xi.vercel.app/",
+      "images": [
+        "/project/weather/1 (1).png",
+        "/project/weather/1 (2).png",
+        "/project/weather/1 (3).png",
+        "/project/weather/1 (4).png"
+      ],
+      "color": "from-blue-400 to-cyan-500"
+    },
+    {
+      id: 5,
+      title: "Todo List Application",
+      description: "A productive todo list app with task management, categories, and progress tracking features.",
+      longDescription: "This todo list application helps users organize their tasks efficiently. It includes features like task categorization, priority levels, due dates, progress tracking, and task filtering. The app has a clean, minimalist design that focuses on productivity and ease of use, with drag-and-drop functionality for task organization.",
+      category: "Productivity",
+      date: "2024-04-20",
+      technologies: ["React", "Local Storage", "Tailwind CSS", "Drag & Drop API"],
+      github: "https://github.com/psycho-70/TODO-list",
+      live: "https://github.com/psycho-70/TODO-list",
+      isConfidential: false,
+      images: [
+        "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=600&fit=crop&crop=entropy&cs=tinysrgb&q=80",
+        "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&h=600&fit=crop&crop=entropy&cs=tinysrgb&q=80",
+        "/project/todo/todo.png",
+        "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=600&fit=crop&crop=entropy&cs=tinysrgb&q=80"
+      ],
+      color: "from-orange-400 to-red-500"
+    },
+    {
+      id: 6,
+      title: "Portfolio Website",
+      description: "A professional portfolio website showcasing projects, skills, and experience with modern design and smooth animations.",
+      longDescription: "This portfolio website serves as a comprehensive showcase of professional work and skills. It features project galleries, skill demonstrations, contact forms, and smooth animations throughout. The design is modern and professional, with responsive layouts that work perfectly on all devices. It includes sections for about, projects, skills, experience, and contact information.",
+      category: "Portfolio",
+      date: "2024-05-10",
+      technologies: ["React", "Tailwind CSS", "Framer Motion","Material UI"],
+      github: "https://github.com/psycho-70/portfolio",
+      live: "https://informativeworld-furqan-khans-projects.vercel.app/",
+      images: [
+        "/project/protfiolo/1 (1).png",
+        "/project/protfiolo/1 (2).png",
+        "/project/protfiolo/1 (3).png",
+        "/project/protfiolo/1 (4).png"
+      ],
+      color: "from-indigo-500 to-purple-600"
     }
   ];
 
@@ -155,7 +223,7 @@ const ProjectShowcase = () => {
   const currentProject = projects[selectedProject];
 
   return (
-    <div className={`min-h-screen ${themeClasses.background} ${themeClasses.text} transition-all duration-500`}>
+    <div className={` transition-all duration-500`}>
       {/* Dark Mode Toggle */}
       <div className="fixed top-6 right-6 z-40">
         <button
@@ -170,6 +238,7 @@ const ProjectShowcase = () => {
           )}
         </button>
       </div>
+
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className={`absolute inset-0 ${themeClasses.headerOverlay} backdrop-blur-sm`}></div>
@@ -380,8 +449,6 @@ const ProjectShowcase = () => {
           </div>
         </div>
       )}
-
-   
     </div>
   );
 };

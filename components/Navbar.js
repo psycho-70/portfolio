@@ -93,7 +93,7 @@ const Navbar = () => {
 
   const navItems = [
     { name: "Home", color: "from-pink-500 to-rose-500" },
-    { name: "About", color: "from-purple-500 to-indigo-500" },
+    // { name: "About", color: "from-purple-500 to-indigo-500" },
     { name: "Skill", color: "from-blue-500 to-cyan-500" },
     { name: "Project", color: "from-green-500 to-teal-500" },
     { name: "Services", color: "from-yellow-500 to-orange-500" },
@@ -125,7 +125,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          <div className="container mx-auto px-4 py-3">
+          <div className="container mx-auto px-4 ">
             <div className="flex items-center justify-between">
               
               {/* Logo Section */}
@@ -141,8 +141,8 @@ const Navbar = () => {
                     <div className="relative p-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm">
                       <Image
                         src={darkMode ? '/seclogo.png' : '/firstlogo.png'}
-                        width={150}
-                        height={70}
+                        width={100}
+                        height={50}
                         alt="the logo"
                         className="transition-transform duration-300 group-hover:scale-105"
                       />
