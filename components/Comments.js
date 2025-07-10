@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useAppContext } from '@/app/Context/AppContext';
+import { v4 as uuidv4 } from 'uuid';
 
 const Comments = () => {
   const { darkMode } = useAppContext();
@@ -9,11 +10,44 @@ const Comments = () => {
   const [comments, setComments] = useState([]);
   const [visibleComments, setVisibleComments] = useState(3);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [userId] = useState(() => {
+    // Generate or retrieve a unique user ID
+    if (typeof window !== 'undefined') {
+      const storedId = localStorage.getItem('userId');
+      if (storedId) return storedId;
+      const newId = uuidv4();
+      localStorage.setItem('userId', newId);
+      return newId;
+    }
+    return uuidv4();
+  });
+
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+
+  const fetchComments = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}/api/contacts`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch comments');
+      }
+      const data = await response.json();
+      setComments(data.map(c => ({
+        ...c,
+        liked: c.likedBy?.includes(userId) || false
+      })));
+    } catch (err) {
+      setError(err.message);
+      console.error('Error fetching comments:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const storedComments = JSON.parse(localStorage.getItem('comments')) || [];
-    setComments(storedComments);
-  }, []);
+    fetchComments();
+  }, [userId]);
 
   const handleChangeComment = (e) => {
     setComment(e.target.value);
@@ -23,48 +57,96 @@ const Comments = () => {
     setUsername(e.target.value.slice(0, 20));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (username.trim() === '' || comment.trim() === '') {
-      alert('Please enter your name and comment.');
+      setError('Please enter your name and comment.');
       return;
     }
 
-    const newComment = {
-      id: new Date().getTime(),
-      text: comment,
-      username: username,
-      createdAt: new Date().toISOString(),
-      likes: 0,
-      liked: false,
-    };
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}/api/contacts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: username,
+          email: `${username.replace(/\s+/g, '-').toLowerCase()}@comment.com`,
+          comment: comment
+        }),
+      });
 
-    const updatedComments = [newComment, ...comments];
-    setComments(updatedComments);
-    localStorage.setItem('comments', JSON.stringify(updatedComments));
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit comment');
+      }
 
-    setComment('');
-    setUsername('');
+      const newComment = await response.json();
+      
+      setComments(prev => [{
+        id: newComment.id,
+        text: newComment.comment,
+        username: newComment.name,
+        createdAt: newComment.createdAt,
+        likes: newComment.likes || 0,
+        liked: false
+      }, ...prev]);
+
+      setComment('');
+      setUsername('');
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleLike = (id) => {
-    const updatedComments = comments.map((comment) => {
-      if (comment.id === id && !comment.liked) {
-        return { ...comment, likes: comment.likes + 1, liked: true };
-      }
-      return comment;
-    });
+  const handleLike = async (id) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}/api/contacts/${id}/like`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      });
 
-    setComments(updatedComments);
-    localStorage.setItem('comments', JSON.stringify(updatedComments));
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to like comment');
+      }
+
+      const result = await response.json();
+      
+      setComments(prev => prev.map(c => 
+        c.id === id 
+          ? { ...c, likes: result.likes, liked: true }
+          : c
+      ));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLoadMore = () => {
-    setVisibleComments((prevVisibleComments) => prevVisibleComments + 3);
+    setVisibleComments(prev => prev + 3);
   };
 
   return (
-    <div className={` transition-all duration-700 `}>
+    <div className={`transition-all duration-700 relative`}>
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
+        </div>
+      )}
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className={`absolute top-20 left-20 w-72 h-72 rounded-full opacity-20 blur-3xl animate-pulse ${
@@ -92,7 +174,6 @@ const Comments = () => {
           </p>
         </div>
         
-        {/* Decorative Line */}
         <div className="flex justify-center">
           <div className={`h-1 w-32 rounded-full ${
             darkMode 
@@ -104,6 +185,28 @@ const Comments = () => {
 
       {/* Main Content */}
       <div className="relative z-10 container mx-auto px-4 pb-16">
+        {/* Error Message */}
+        {error && (
+          <div className={`p-4 rounded-xl mb-6 ${
+            darkMode 
+              ? 'bg-red-900/30 border border-red-700 text-red-300' 
+              : 'bg-red-100 border border-red-300 text-red-700'
+          }`}>
+            <div className="flex items-center">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{error}</span>
+            </div>
+            <button 
+              onClick={() => setError(null)}
+              className="mt-2 text-sm underline"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           {/* Comment Form Section */}
@@ -189,13 +292,14 @@ const Comments = () => {
 
               <button
                 type="submit"
+                disabled={loading}
                 className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
                   darkMode 
                     ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30' 
                     : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg shadow-blue-500/30'
-                }`}
+                } ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
-                🚀 Share Your Thoughts
+                {loading ? 'Submitting...' : '🚀 Share Your Thoughts'}
               </button>
             </form>
           </div>
@@ -213,7 +317,7 @@ const Comments = () => {
                   : 'bg-gradient-to-r from-purple-500 to-pink-500'
               }`}>
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-2-2V10a2 2 0 012-2h8z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1-2V10a2 2 0 011-2h8z" />
                 </svg>
               </div>
               <h2 className={`text-2xl font-bold ${
@@ -224,12 +328,6 @@ const Comments = () => {
             </div>
 
             <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
-              {error && (
-                <div className="p-4 bg-red-500/20 border border-red-500/30 rounded-xl text-red-400">
-                  {error}
-                </div>
-              )}
-              
               {comments.slice(0, visibleComments).map((comment) => (
                 <div
                   key={comment.id}
@@ -255,7 +353,7 @@ const Comments = () => {
                         <h3 className={`font-bold text-lg ${
                           darkMode ? 'text-white' : 'text-gray-800'
                         }`}>
-                          {comment.username}
+                          {comment.username || comment.name}
                         </h3>
                         <span className={`text-xs px-2 py-1 rounded-full ${
                           darkMode 
@@ -276,26 +374,26 @@ const Comments = () => {
                   <p className={`mb-4 text-base leading-relaxed ${
                     darkMode ? 'text-gray-300' : 'text-gray-700'
                   }`}>
-                    {comment.text}
+                    {comment.text || comment.comment}
                   </p>
                   
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <button
                         onClick={() => handleLike(comment.id)}
-                        disabled={comment.liked}
+                        disabled={comment.liked || loading}
                         className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 ${
                           comment.liked 
                             ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white cursor-not-allowed' 
                             : darkMode 
                               ? 'bg-gray-700 text-gray-300 hover:bg-gradient-to-r hover:from-pink-500 hover:to-red-500 hover:text-white' 
                               : 'bg-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-pink-500 hover:to-red-500 hover:text-white'
-                        }`}
+                        } ${loading ? 'cursor-not-allowed opacity-70' : ''}`}
                       >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
                         </svg>
-                        <span className="font-medium">{comment.likes}</span>
+                        <span className="font-medium">{comment.likes || 0}</span>
                       </button>
                     </div>
                     
@@ -314,7 +412,7 @@ const Comments = () => {
                 </div>
               ))}
               
-              {comments.length === 0 && (
+              {comments.length === 0 && !loading && (
                 <div className="text-center py-12">
                   <div className={`text-6xl mb-4 ${
                     darkMode ? 'text-gray-600' : 'text-gray-400'
@@ -328,19 +426,31 @@ const Comments = () => {
                   </p>
                 </div>
               )}
+
+              {loading && comments.length === 0 && (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-purple-500 mx-auto mb-4"></div>
+                  <p className={`text-lg ${
+                    darkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
+                    Loading comments...
+                  </p>
+                </div>
+              )}
             </div>
             
             {visibleComments < comments.length && (
               <div className="mt-6 text-center">
                 <button
                   onClick={handleLoadMore}
+                  disabled={loading}
                   className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
                     darkMode 
                       ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 shadow-lg shadow-blue-500/30' 
                       : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30'
-                  }`}
+                  } ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
-                  🔄 Load More ({comments.length - visibleComments} remaining)
+                  {loading ? 'Loading...' : `🔄 Load More (${comments.length - visibleComments} remaining)`}
                 </button>
               </div>
             )}
