@@ -10,14 +10,20 @@ import TeamMemberCard from "@/components/Team";
 import { useAppContext } from "./Context/AppContext";
 import PageWithFixedBackground from "@/components/BackGroundimage";
 import WorkExperienceShowcase from "@/components/WorkExperienceShowcase ";
+import Chatbot from "@/components/Chatbot/Chatbot";
+import { motion } from 'framer-motion';
+import { SmartToy, Close } from '@mui/icons-material';
+
 const Page = () => {
   const [loading, setLoading] = useState(true);
   const [terminalText, setTerminalText] = useState("");
   const [showModeQuestion, setShowModeQuestion] = useState(false);
   const [waitingForUser, setWaitingForUser] = useState(false);
+  const [showChatbot, setShowChatbot] = useState(false); // State for chatbot visibility
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
   const { darkMode, toggleDarkMode } = useAppContext();
+
   const themeClasses = {
     background: darkMode
       ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900'
@@ -88,7 +94,6 @@ const Page = () => {
     setShowModeQuestion(false);
     setTerminalText(prev => prev + "\n> Preference saved. Loading interface...");
     setWaitingForUser(false);
-    // Start the timeout only after user selection
     timeoutRef.current = setTimeout(() => setLoading(false), 2000);
   };
 
@@ -134,29 +139,48 @@ const Page = () => {
           {/* <About /> */}
         </div>
         <div className={`bg-gradient-to-br ${themeClasses.background} ${themeClasses.text}`}>
-         
-            <div id="skill">
-              <Skill />
-            </div>
-            <div id="Experince">
-              <WorkExperienceShowcase />
-            </div>
-            <div id="project">
-              <Project />
-            </div>
-            <div id="services">
-              <Services />
-            </div>
-            <div id="team">
-              <TeamMemberCard />
-            </div>
-            <div id="comments">
-              <Comments />
-            </div>
+          <div id="skill">
+            <Skill />
+          </div>
+          <div id="Experince">
+            <WorkExperienceShowcase />
+          </div>
+          <div id="project">
+            <Project />
+          </div>
+          <div id="services">
+            <Services />
+          </div>
+          <div id="team">
+            <TeamMemberCard />
+          </div>
+          <div id="comments">
+            <Comments />
           </div>
         </div>
+
+        {/* Chatbot Toggle Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowChatbot(!showChatbot)}
+          className={`fixed bottom-6 right-6 p-4 rounded-full shadow-lg z-40 ${
+            darkMode ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white'
+          }`}
+        >
+          {showChatbot ? <Close /> : <SmartToy />}
+        </motion.button>
+
+        {/* Chatbot Component */}
+        {showChatbot && (
+          <Chatbot 
+            onClose={() => setShowChatbot(false)} 
+            darkMode={darkMode} 
+          />
+        )}
       </div>
-      );
+    </div>
+  );
 };
 
-      export default Page;
+export default Page;

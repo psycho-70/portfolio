@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ExternalLink, Github, Calendar, Tag, X, ZoomIn, Moon, Sun, Lock } from 'lucide-react';
 import { useAppContext } from '@/app/Context/AppContext';
+
 const ProjectShowcase = () => {
-const { darkMode } = useAppContext();  
+  const { darkMode, setDarkMode } = useAppContext();  
   const [selectedProject, setSelectedProject] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -141,6 +142,15 @@ const { darkMode } = useAppContext();
     }
   ];
 
+  // Auto image slider effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSelectedImage((prev) => (prev + 1) % projects[selectedProject].images.length);
+    }, 3000); // 5 seconds
+
+    return () => clearInterval(interval);
+  }, [selectedProject, projects]);
+
   // Enhanced project navigation with animation
   const nextProject = () => {
     if (isAnimating) return;
@@ -248,25 +258,12 @@ const { darkMode } = useAppContext();
   const currentProject = projects[selectedProject];
 
   return (
-    <div className={`transition-all duration-500`}>
-      {/* Dark Mode Toggle */}
-      <div className="fixed top-6 right-6 z-40">
-        <button
-          onClick={toggleDarkMode}
-          className={`p-3 rounded-full ${themeClasses.cardBg} border ${themeClasses.cardBorder} backdrop-blur-sm transition-all duration-300 hover:scale-110 shadow-lg`}
-          aria-label="Toggle dark mode"
-        >
-          {darkMode ? (
-            <Sun className="w-6 h-6 text-yellow-400" />
-          ) : (
-            <Moon className="w-6 h-6 text-gray-600" />
-          )}
-        </button>
-      </div>
+    <div className={`transition-all duration-500 `}>
+     
 
       {/* Header */}
       <div className="relative overflow-hidden">
-        <div className={`absolute inset-0 ${themeClasses.headerOverlay} backdrop-blur-sm`}></div>
+        <div className={`absolute inset-0  backdrop-blur-sm`}></div>
         <div className="relative z-10 container mx-auto px-6 py-12">
           <div className="text-center">
             <h1 className={`text-5xl font-bold mb-4 ${themeClasses.gradientText} bg-clip-text text-transparent`}>
