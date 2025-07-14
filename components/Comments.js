@@ -24,45 +24,45 @@ const Comments = () => {
   });
 
 const API_URL = process.env.NEXT_PUBLIC_DEPLOYMENT_URL;
-  const fetchComments = async () => {
-    try {
-      setLoading(true);
-      // Fixed: Use GET request to fetch comments
-      const response = await fetch(`${API_URL}/api/contacts`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+console.log('API_URL:', process.env.NEXT_PUBLIC_DEPLOYMENT_URL);
+ const fetchComments = async () => {
+  try {
+    setLoading(true);
+    // FIXED: Changed from /api to /api/contacts
+    const response = await fetch(`${API_URL}/api/contacts`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      // Handle the response data properly
-      if (Array.isArray(data)) {
-        setComments(data.map(c => ({
-          ...c,
-          liked: c.likedBy?.includes(userId) || false
-        })));
-      } else if (data.contacts && Array.isArray(data.contacts)) {
-        setComments(data.contacts.map(c => ({
-          ...c,
-          liked: c.likedBy?.includes(userId) || false
-        })));
-      } else {
-        setComments([]);
-      }
-    } catch (err) {
-      setError(err.message);
-      console.error('Error fetching comments:', err);
-      setComments([]); // Set empty array on error
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  };
+
+    const data = await response.json();
+    
+    // Handle the response data properly
+    if (Array.isArray(data)) {
+      setComments(data.map(c => ({
+        id: c.id,
+        text: c.comment || c.message, // Use 'comment' field from your backend
+        username: c.name,
+        createdAt: c.createdAt,
+        likes: c.likes || 0,
+        liked: c.likedBy?.includes(userId) || false
+      })));
+    } else {
+      setComments([]);
+    }
+  } catch (err) {
+    setError(err.message);
+    console.error('Error fetching comments:', err);
+    setComments([]); // Set empty array on error
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchComments();
