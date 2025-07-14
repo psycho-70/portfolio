@@ -28,7 +28,7 @@ const API_URL = process.env.NEXT_PUBLIC_DEPLOYMENT_URL;
     try {
       setLoading(true);
       // Fixed: Use GET request to fetch comments
-      const response = await fetch(`${API_URL}/api`, {
+      const response = await fetch(`${API_URL}/api/contacts`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
